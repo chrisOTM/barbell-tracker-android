@@ -1,7 +1,10 @@
 # Barbell Tracker
 
+**Repository:** https://github.com/chrisOTM/barbell-tracker-android
+**Autor:** ChrisOTM ([@chrisOTM](https://github.com/chrisOTM))
+
 Native Android app for structured barbell training: plans, guided workout execution with
-auto rest-timer, set logging, weight progression, and a training diary. Fully offline — no
+rest timer, set logging, weight progression, and a training diary. Fully offline — no
 login, cloud, ads, or tracking.
 
 Built from `spec/Barbell-Tracker-requirements.md`.
@@ -42,3 +45,8 @@ bump AGP to ≥ 8.9 which understands minor SDK versions.
 See `spec/Barbell-Tracker-requirements.md`. All MUST and SHOULD user stories are implemented;
 the foreground-service rest timer (optional in the spec) is deferred — the timer runs in-app
 with the screen kept on.
+
+## Autor
+**ChrisOTM** — [github.com/chrisOTM](https://github.com/chrisOTM)
+
+Repository: https://github.com/chrisOTM/barbell-tracker-android

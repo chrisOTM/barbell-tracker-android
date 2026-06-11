@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,9 +41,7 @@ import dev.chrisotm.barbelltracker.data.entity.Workout
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExerciseWithExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutWithExercises
-import dev.chrisotm.barbelltracker.domain.RestDefaults
 import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
-import dev.chrisotm.barbelltracker.ui.util.formatDuration
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +58,7 @@ fun PlanEditScreen(
     var deletingPlan by remember { mutableStateOf(false) }
     var pickerForWorkout by remember { mutableStateOf<Long?>(null) }
     var editingConfig by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var replacingConfig by remember { mutableStateOf<WorkoutExercise?>(null) }
 
     Scaffold(
         topBar = {
@@ -92,6 +92,7 @@ fun PlanEditScreen(
                     onDeleteWorkout = { viewModel.deleteWorkout(w.workout) },
                     onAddExercise = { pickerForWorkout = w.workout.id },
                     onEditConfig = { editingConfig = it },
+                    onSwapConfig = { replacingConfig = it },
                     onDeleteConfig = { viewModel.deleteExercise(it) },
                     onMove = { index, up ->
                         viewModel.moveExercise(w.exercises.map { it.config }, index, up)
@@ -130,6 +131,13 @@ fun PlanEditScreen(
             onDismiss = { pickerForWorkout = null }
         )
     }
+    replacingConfig?.let { config ->
+        ExercisePickerDialog(
+            library = library,
+            onPick = { viewModel.swapExercise(config, it); replacingConfig = null },
+            onDismiss = { replacingConfig = null }
+        )
+    }
     editingConfig?.let { config ->
         ExerciseConfigDialog(
             config = config,
@@ -146,6 +154,7 @@ private fun WorkoutCard(
     onDeleteWorkout: () -> Unit,
     onAddExercise: () -> Unit,
     onEditConfig: (WorkoutExercise) -> Unit,
+    onSwapConfig: (WorkoutExercise) -> Unit,
     onDeleteConfig: (WorkoutExercise) -> Unit,
     onMove: (index: Int, up: Boolean) -> Unit
 ) {
@@ -167,6 +176,7 @@ private fun WorkoutCard(
                     isFirst = index == 0,
                     isLast = index == workout.exercises.lastIndex,
                     onEdit = { onEditConfig(item.config) },
+                    onSwap = { onSwapConfig(item.config) },
                     onDelete = { onDeleteConfig(item.config) },
                     onUp = { onMove(index, true) },
                     onDown = { onMove(index, false) }
@@ -194,35 +204,39 @@ private fun ExerciseConfigRow(
     isFirst: Boolean,
     isLast: Boolean,
     onEdit: () -> Unit,
+    onSwap: () -> Unit,
     onDelete: () -> Unit,
     onUp: () -> Unit,
     onDown: () -> Unit
 ) {
     val c = item.config
-    val rest = RestDefaults.effective(c.restSeconds, c.sets, c.reps)
     val weightText = c.targetWeightKg?.let { " · ${formatWeight(it)}" } ?: ""
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
-            Text(
-                "${c.sets}×${c.reps}$weightText · Pause ${formatDuration(rest)}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "${c.sets}×${c.reps}$weightText",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            IconButton(onClick = onUp, enabled = !isFirst) {
+                Icon(Icons.Filled.ArrowUpward, contentDescription = "Nach oben")
+            }
+            IconButton(onClick = onDown, enabled = !isLast) {
+                Icon(Icons.Filled.ArrowDownward, contentDescription = "Nach unten")
+            }
         }
-        IconButton(onClick = onUp, enabled = !isFirst) {
-            Icon(Icons.Filled.ArrowUpward, contentDescription = "Nach oben")
-        }
-        IconButton(onClick = onDown, enabled = !isLast) {
-            Icon(Icons.Filled.ArrowDownward, contentDescription = "Nach unten")
-        }
-        IconButton(onClick = onEdit) {
-            Icon(Icons.Filled.Edit, contentDescription = "Bearbeiten")
-        }
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Filled.Delete, contentDescription = "Entfernen")
+        Row {
+            IconButton(onClick = onSwap) {
+                Icon(Icons.Filled.SwapHoriz, contentDescription = "Übung ersetzen")
+            }
+            IconButton(onClick = onEdit) {
+                Icon(Icons.Filled.Edit, contentDescription = "Bearbeiten")
+            }
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Filled.Delete, contentDescription = "Entfernen")
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,7 +44,6 @@ import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
 import dev.chrisotm.barbelltracker.ui.components.SetProgressDots
 import dev.chrisotm.barbelltracker.ui.theme.Failure
 import dev.chrisotm.barbelltracker.ui.theme.Success
-import dev.chrisotm.barbelltracker.ui.util.formatDuration
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +54,7 @@ fun ActiveWorkoutScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    // Keep the screen awake during the workout (US-2.4 in-app timer).
+    // Keep the screen awake during the workout.
     val view = LocalView.current
     DisposableEffect(Unit) {
         view.keepScreenOn = true
@@ -86,11 +86,9 @@ fun ActiveWorkoutScreen(
                     onResult = viewModel::recordSet,
                     onEditWeight = { editingWeight = true }
                 )
-                Phase.RESTING -> RestingContent(
+                Phase.CONFIRM_NEXT -> ConfirmNextContent(
                     state = state,
-                    onTogglePause = viewModel::togglePause,
-                    onAddRest = { viewModel.addRest(15) },
-                    onNext = viewModel::nextStep
+                    onStartNext = viewModel::startNextExercise
                 )
                 Phase.FINISHED -> FinishedContent(
                     state = state,
@@ -185,41 +183,42 @@ private fun RunningContent(
     }
 }
 
+/** Acknowledgement gate shown between exercises — no rest timer, no break between sets. */
 @Composable
-private fun RestingContent(
+private fun ConfirmNextContent(
     state: ActiveUiState,
-    onTogglePause: () -> Unit,
-    onAddRest: () -> Unit,
-    onNext: () -> Unit
+    onStartNext: () -> Unit
 ) {
     Column(
         Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Pause", style = MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(8.dp))
-        Text(
-            formatDuration(state.remainingSeconds),
-            style = MaterialTheme.typography.displayLarge,
-            color = if (state.remainingSeconds == 0) Success else MaterialTheme.colorScheme.primary
+        Icon(
+            Icons.Filled.CheckCircle,
+            contentDescription = null,
+            tint = Success,
+            modifier = Modifier.height(64.dp)
         )
-        Spacer(Modifier.height(24.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onTogglePause) {
-                Text(if (state.paused) "Fortsetzen" else "Pause")
-            }
-            OutlinedButton(onClick = onAddRest) { Text("+15s") }
+        Spacer(Modifier.height(8.dp))
+        if (state.finishedExerciseName.isNotBlank()) {
+            Text(
+                "${state.finishedExerciseName} abgeschlossen",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
         }
         Spacer(Modifier.height(32.dp))
-        val label = when {
-            !state.isLastSet -> "Nächster Satz"
-            !state.isLastExercise -> "Nächste Übung"
-            else -> "Workout beenden"
-        }
+        Text("Nächste Übung", style = MaterialTheme.typography.titleLarge)
+        Text(
+            state.nextExerciseName,
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(40.dp))
         Button(
-            onClick = onNext,
-            modifier = Modifier.fillMaxWidth().height(60.dp)
-        ) { Text(label, style = MaterialTheme.typography.titleLarge) }
+            onClick = onStartNext,
+            modifier = Modifier.fillMaxWidth().height(64.dp)
+        ) { Text("Nächste Übung starten", style = MaterialTheme.typography.titleLarge) }
     }
 }

@@ -30,8 +30,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.chrisotm.barbelltracker.data.entity.WorkoutWithExercises
 import dev.chrisotm.barbelltracker.data.repo.PlanRepository
-import dev.chrisotm.barbelltracker.domain.RestDefaults
-import dev.chrisotm.barbelltracker.ui.util.formatDuration
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -78,14 +76,12 @@ fun WorkoutOverviewScreen(
             ) {
                 items(workout?.exercises ?: emptyList(), key = { it.config.id }) { item ->
                     val c = item.config
-                    val rest = RestDefaults.effective(c.restSeconds, c.sets, c.reps)
                     Card(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Column(Modifier.padding(16.dp)) {
                             Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
                             Text(
                                 "${c.sets}×${c.reps}" +
-                                    (c.targetWeightKg?.let { " · ${formatWeight(it)}" } ?: " · Gewicht offen") +
-                                    " · Pause ${formatDuration(rest)}",
+                                    (c.targetWeightKg?.let { " · ${formatWeight(it)}" } ?: " · Gewicht offen"),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }

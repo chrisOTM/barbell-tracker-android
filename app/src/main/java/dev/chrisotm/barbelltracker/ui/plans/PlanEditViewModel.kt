@@ -62,6 +62,12 @@ class PlanEditViewModel @Inject constructor(
         viewModelScope.launch { planRepository.updateExercise(item) }
     }
 
+    /** Replace the exercise in a slot, keeping its sets/reps/weight/position. */
+    fun swapExercise(item: WorkoutExercise, exercise: Exercise) {
+        if (item.exerciseId == exercise.id) return
+        viewModelScope.launch { planRepository.updateExercise(item.copy(exerciseId = exercise.id)) }
+    }
+
     fun deleteExercise(item: WorkoutExercise) {
         viewModelScope.launch { planRepository.deleteExercise(item) }
     }

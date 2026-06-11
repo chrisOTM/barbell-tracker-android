@@ -10,16 +10,13 @@ import dev.chrisotm.barbelltracker.data.repo.PlanRepository
 import dev.chrisotm.barbelltracker.data.repo.SessionRepository
 import dev.chrisotm.barbelltracker.domain.ActiveExercise
 import dev.chrisotm.barbelltracker.domain.ActiveSet
-import dev.chrisotm.barbelltracker.domain.RestDefaults
 import dev.chrisotm.barbelltracker.domain.WorkoutEngine
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class Phase { LOADING, RUNNING, RESTING, FINISHED }
+enum class Phase { LOADING, RUNNING, CONFIRM_NEXT, FINISHED }
 
 data class ProgressionItem(
     val exerciseId: Long,
@@ -37,11 +34,12 @@ data class ActiveUiState(
     val setCount: Int = 0,
     val plannedReps: Int = 0,
     val dotResults: List<Boolean?> = emptyList(),
-    val remainingSeconds: Int = 0,
-    val totalRestSeconds: Int = 0,
-    val paused: Boolean = false,
     val isLastSet: Boolean = false,
     val isLastExercise: Boolean = false,
+    /** Name of the just-finished exercise, shown on the confirm screen. */
+    val finishedExerciseName: String = "",
+    /** Name of the upcoming exercise to acknowledge before starting (CONFIRM_NEXT). */
+    val nextExerciseName: String = "",
     val progression: List<ProgressionItem> = emptyList()
 )
 
@@ -67,7 +65,6 @@ class ActiveWorkoutViewModel @Inject constructor(
     private val configByExercise = mutableMapOf<Long, WorkoutExercise>()
     /** Edited progression choices keyed by exerciseId. */
     private val progressionChoices = mutableMapOf<Long, Double>()
-    private var timerJob: Job? = null
 
     init {
         viewModelScope.launch { load() }
@@ -81,13 +78,12 @@ class ActiveWorkoutViewModel @Inject constructor(
             val startWeight = c.targetWeightKg
                 ?: sessionRepository.lastWeightFor(item.exercise.id)
                 ?: 0.0
-            val rest = RestDefaults.effective(c.restSeconds, c.sets, c.reps)
             ActiveExercise(
                 workoutExerciseId = c.id,
                 exerciseId = item.exercise.id,
                 name = item.exercise.name,
                 plannedReps = c.reps,
-                restSeconds = rest,
+                restSeconds = 0, // rest timer removed — sets flow with no break
                 weightKg = startWeight,
                 sets = (0 until c.sets).map { i ->
                     ActiveSet(setIndex = i, plannedReps = c.reps, actualReps = c.reps)
@@ -125,10 +121,23 @@ class ActiveWorkoutViewModel @Inject constructor(
         )
     }
 
-    /** Log the current set and start the rest timer (US-2.3, US-2.4). */
+    private fun emitConfirmNext(finishedName: String) {
+        val upcoming = engine.currentExercise()
+        _state.value = _state.value.copy(
+            phase = Phase.CONFIRM_NEXT,
+            finishedExerciseName = finishedName,
+            nextExerciseName = upcoming.name
+        )
+    }
+
+    /**
+     * Log the current set. Within an exercise the next set is shown immediately (no break).
+     * After an exercise's last set, a confirmation gate is shown before the next exercise
+     * (US: confirm before moving to the next exercise).
+     */
     fun recordSet(success: Boolean, actualReps: Int) {
-        val rest = engine.recordCurrentSet(success, actualReps)
         val ex = engine.currentExercise()
+        engine.recordCurrentSet(success, actualReps)
         viewModelScope.launch {
             sessionRepository.logSet(
                 SessionSet(
@@ -140,49 +149,30 @@ class ActiveWorkoutViewModel @Inject constructor(
                     actualReps = actualReps,
                     weightKg = ex.weightKg,
                     success = success,
-                    restSeconds = rest
+                    restSeconds = 0
                 )
             )
         }
-        startTimer(rest)
-    }
-
-    private fun startTimer(seconds: Int) {
-        timerJob?.cancel()
-        _state.value = _state.value.copy(
-            phase = Phase.RESTING,
-            paused = false,
-            totalRestSeconds = seconds,
-            remainingSeconds = seconds,
-            dotResults = engine.currentExercise().sets.map { if (it.logged) it.success else null }
-        )
-        timerJob = viewModelScope.launch {
-            while (_state.value.remainingSeconds > 0) {
-                delay(1000)
-                if (!_state.value.paused && _state.value.phase == Phase.RESTING) {
-                    _state.value = _state.value.copy(
-                        remainingSeconds = (_state.value.remainingSeconds - 1).coerceAtLeast(0)
-                    )
-                }
+        val finishedName = ex.name
+        when {
+            !engine.isLastSetOfExercise() -> {
+                engine.advance()
+                emitRunning()
+            }
+            !engine.isLastExercise() -> {
+                engine.advance()
+                emitConfirmNext(finishedName)
+            }
+            else -> {
+                engine.advance()
+                finish()
             }
         }
     }
 
-    fun togglePause() {
-        _state.value = _state.value.copy(paused = !_state.value.paused)
-    }
-
-    fun addRest(seconds: Int) {
-        _state.value = _state.value.copy(
-            remainingSeconds = (_state.value.remainingSeconds + seconds).coerceAtLeast(0)
-        )
-    }
-
-    /** Confirm readiness and move on (US-2.5). */
-    fun nextStep() {
-        timerJob?.cancel()
-        val more = engine.advance()
-        if (more) emitRunning() else finish()
+    /** Acknowledge the confirmation screen and begin the next exercise. */
+    fun startNextExercise() {
+        emitRunning()
     }
 
     /** In-workout weight change for the current exercise (US-3.3). */
@@ -194,7 +184,6 @@ class ActiveWorkoutViewModel @Inject constructor(
 
     /** End early; already-logged sets are kept (US-2.7). */
     fun endEarly() {
-        timerJob?.cancel()
         finish()
     }
 

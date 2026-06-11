@@ -25,8 +25,16 @@ Layers wired with Hilt. No business logic in composables. Library + plan templat
 first launch.
 
 ## Build & run
-The Gradle daemon must run on JDK 17–21 (the system JDK 26 is too new for AGP 8.7.3).
-`org.gradle.java.home` in `gradle.properties` points at the Android Studio JBR.
+The Gradle daemon must run on **JDK 17–21** (newer JDKs are not supported by AGP 8.7.3).
+Point Gradle at a suitable JDK in one of these ways — none is committed:
+
+```bash
+export JAVA_HOME=/path/to/jdk-21   # e.g. the Android Studio JBR
+# or, machine-local and never committed:
+echo "org.gradle.java.home=/path/to/jdk-21" >> ~/.gradle/gradle.properties
+```
+
+Then:
 
 ```bash
 ./gradlew :app:assembleDebug      # build APK (offline-capable once deps are cached)
@@ -34,12 +42,14 @@ The Gradle daemon must run on JDK 17–21 (the system JDK 26 is too new for AGP 
 ./gradlew :app:installDebug       # install on a running emulator/device
 ```
 
+The Android SDK location is read from `local.properties` (`sdk.dir=…`), which is gitignored —
+create it locally or let Android Studio generate it.
+
 ### SDK note (Android 16 / API 36)
-AGP 8.7.3 resolves `compileSdk = 36` to an SDK platform whose hash is `android-36`. This
-machine only ships the minor-versioned `android-36.1` platform, so a non-destructive alias
-directory `platforms/android-36` (symlinks to `android-36.1` + a `package.xml`/`source.properties`
-declaring `api-level 36`) was created in the SDK. Recreate it if the SDK is reinstalled, or
-bump AGP to ≥ 8.9 which understands minor SDK versions.
+AGP 8.7.3 resolves `compileSdk = 36` to an SDK platform whose hash is `android-36`. If your
+SDK only ships the minor-versioned `android-36.1` platform, create a non-destructive alias
+directory `platforms/android-36` (symlinks to `android-36.1` plus a `package.xml`/`source.properties`
+declaring `api-level 36`), or bump AGP to ≥ 8.9 which understands minor SDK versions.
 
 ## Feature → requirement map
 See `spec/Barbell-Tracker-requirements.md`. All MUST and SHOULD user stories are implemented;

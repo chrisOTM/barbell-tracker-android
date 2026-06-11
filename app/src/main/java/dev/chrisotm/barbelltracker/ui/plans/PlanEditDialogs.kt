@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
+import dev.chrisotm.barbelltracker.domain.RestDefaults
 import dev.chrisotm.barbelltracker.ui.components.StepperField
 
 @Composable
@@ -86,6 +87,8 @@ fun ExerciseConfigDialog(
     var sets by remember { mutableStateOf(config.sets.toString()) }
     var reps by remember { mutableStateOf(config.reps.toString()) }
     var weight by remember { mutableStateOf(config.targetWeightKg?.let { trimNumber(it) } ?: "") }
+    val defaultRest = RestDefaults.secondsFor(config.sets, config.reps)
+    var rest by remember { mutableStateOf((config.restSeconds ?: defaultRest).toString()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -116,6 +119,14 @@ fun ExerciseConfigDialog(
                     decimal = true,
                     modifier = Modifier.padding(top = 8.dp)
                 )
+                StepperField(
+                    label = "Pause (Sek.)",
+                    value = rest,
+                    onValueChange = { rest = it.filter(Char::isDigit) },
+                    onDecrement = { rest = ((rest.toIntOrNull() ?: 30) - 15).coerceAtLeast(0).toString() },
+                    onIncrement = { rest = ((rest.toIntOrNull() ?: 0) + 15).toString() },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         },
         confirmButton = {
@@ -124,7 +135,8 @@ fun ExerciseConfigDialog(
                     config.copy(
                         sets = sets.toIntOrNull()?.coerceAtLeast(1) ?: config.sets,
                         reps = reps.toIntOrNull()?.coerceAtLeast(1) ?: config.reps,
-                        targetWeightKg = weight.toDoubleOrNull()
+                        targetWeightKg = weight.toDoubleOrNull(),
+                        restSeconds = rest.toIntOrNull()
                     )
                 )
             }) { Text("Speichern") }

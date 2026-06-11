@@ -41,7 +41,9 @@ import dev.chrisotm.barbelltracker.data.entity.Workout
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExerciseWithExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutWithExercises
+import dev.chrisotm.barbelltracker.domain.RestDefaults
 import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
+import dev.chrisotm.barbelltracker.ui.util.formatDuration
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -210,13 +212,14 @@ private fun ExerciseConfigRow(
     onDown: () -> Unit
 ) {
     val c = item.config
+    val rest = RestDefaults.effective(c.restSeconds, c.sets, c.reps)
     val weightText = c.targetWeightKg?.let { " · ${formatWeight(it)}" } ?: ""
     Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "${c.sets}×${c.reps}$weightText",
+                    "${c.sets}×${c.reps}$weightText · Pause ${formatDuration(rest)}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

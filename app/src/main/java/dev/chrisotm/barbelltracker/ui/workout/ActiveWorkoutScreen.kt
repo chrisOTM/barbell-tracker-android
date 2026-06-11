@@ -44,6 +44,7 @@ import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
 import dev.chrisotm.barbelltracker.ui.components.SetProgressDots
 import dev.chrisotm.barbelltracker.ui.theme.Failure
 import dev.chrisotm.barbelltracker.ui.theme.Success
+import dev.chrisotm.barbelltracker.ui.util.formatDuration
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,6 +86,12 @@ fun ActiveWorkoutScreen(
                     state = state,
                     onResult = viewModel::recordSet,
                     onEditWeight = { editingWeight = true }
+                )
+                Phase.RESTING -> RestingContent(
+                    state = state,
+                    onTogglePause = viewModel::togglePause,
+                    onAddRest = { viewModel.addRest(15) },
+                    onNext = viewModel::nextSet
                 )
                 Phase.CONFIRM_NEXT -> ConfirmNextContent(
                     state = state,
@@ -183,7 +190,42 @@ private fun RunningContent(
     }
 }
 
-/** Acknowledgement gate shown between exercises — no rest timer, no break between sets. */
+/** Rest timer shown between sets of an exercise (US-2.4 / US-2.6). */
+@Composable
+private fun RestingContent(
+    state: ActiveUiState,
+    onTogglePause: () -> Unit,
+    onAddRest: () -> Unit,
+    onNext: () -> Unit
+) {
+    Column(
+        Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Pause", style = MaterialTheme.typography.titleLarge)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            formatDuration(state.remainingSeconds),
+            style = MaterialTheme.typography.displayLarge,
+            color = if (state.remainingSeconds == 0) Success else MaterialTheme.colorScheme.primary
+        )
+        Spacer(Modifier.height(24.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedButton(onClick = onTogglePause) {
+                Text(if (state.paused) "Fortsetzen" else "Pause")
+            }
+            OutlinedButton(onClick = onAddRest) { Text("+15s") }
+        }
+        Spacer(Modifier.height(32.dp))
+        Button(
+            onClick = onNext,
+            modifier = Modifier.fillMaxWidth().height(60.dp)
+        ) { Text("Nächster Satz", style = MaterialTheme.typography.titleLarge) }
+    }
+}
+
+/** Acknowledgement gate shown between exercises (after an exercise's last set). */
 @Composable
 private fun ConfirmNextContent(
     state: ActiveUiState,

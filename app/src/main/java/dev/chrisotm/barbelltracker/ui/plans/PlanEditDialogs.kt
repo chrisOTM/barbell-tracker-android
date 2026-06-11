@@ -18,9 +18,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.domain.RestDefaults
@@ -61,14 +63,19 @@ fun ExercisePickerDialog(
         text = {
             LazyColumn(Modifier.heightIn(max = 400.dp)) {
                 items(library, key = { it.id }) { ex ->
+                    val ctx = LocalContext.current
+                    val muscles = SeedCatalog.localizedMuscles(ctx, ex.name, ex.muscleGroups)
                     Card(
                         onClick = { onPick(ex) },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     ) {
                         Column(Modifier.padding(12.dp)) {
-                            Text(ex.name, style = MaterialTheme.typography.titleMedium)
-                            if (ex.muscleGroups.isNotBlank()) {
-                                Text(ex.muscleGroups, style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                SeedCatalog.localizedName(ctx, ex.name),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            if (muscles.isNotBlank()) {
+                                Text(muscles, style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }

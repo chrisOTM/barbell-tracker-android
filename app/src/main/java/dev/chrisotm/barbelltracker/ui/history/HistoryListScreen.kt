@@ -25,11 +25,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -143,11 +145,15 @@ private fun SessionRow(item: SessionWithSets, onClick: () -> Unit) {
                 Text(header, style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary)
             }
+            val ctx = LocalContext.current
             val byExercise = item.sets.groupBy { it.exerciseName }
             byExercise.forEach { (name, sets) ->
                 val top = sets.maxByOrNull { it.weightKg }?.weightKg ?: 0.0
                 Text(
-                    stringResource(R.string.session_summary, name, sets.size, formatWeight(top)),
+                    stringResource(
+                        R.string.session_summary,
+                        SeedCatalog.localizedName(ctx, name), sets.size, formatWeight(top)
+                    ),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

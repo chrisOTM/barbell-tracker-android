@@ -9,29 +9,8 @@ import dev.chrisotm.barbelltracker.data.entity.Exercise
  * Built from a [Context] so the library is seeded in the app's active language on first launch.
  */
 object SeedData {
-    /** name-res / muscles-res / desc-res / bodyweight for each starter exercise. */
-    private data class SeedExercise(
-        val nameRes: Int,
-        val musclesRes: Int,
-        val descRes: Int,
-        val bodyweight: Boolean = false
-    )
-
-    private val defs = listOf(
-        SeedExercise(R.string.seed_back_squat_name, R.string.seed_back_squat_muscles, R.string.seed_back_squat_desc),
-        SeedExercise(R.string.seed_bench_press_name, R.string.seed_bench_press_muscles, R.string.seed_bench_press_desc),
-        SeedExercise(R.string.seed_deadlift_name, R.string.seed_deadlift_muscles, R.string.seed_deadlift_desc),
-        SeedExercise(R.string.seed_barbell_row_name, R.string.seed_barbell_row_muscles, R.string.seed_barbell_row_desc),
-        SeedExercise(R.string.seed_ohp_name, R.string.seed_ohp_muscles, R.string.seed_ohp_desc),
-        SeedExercise(R.string.seed_front_squat_name, R.string.seed_front_squat_muscles, R.string.seed_front_squat_desc),
-        SeedExercise(R.string.seed_lunges_name, R.string.seed_lunges_muscles, R.string.seed_lunges_desc),
-        SeedExercise(R.string.seed_good_mornings_name, R.string.seed_good_mornings_muscles, R.string.seed_good_mornings_desc),
-        SeedExercise(R.string.seed_rdl_name, R.string.seed_rdl_muscles, R.string.seed_rdl_desc),
-        SeedExercise(R.string.seed_one_arm_row_name, R.string.seed_one_arm_row_muscles, R.string.seed_one_arm_row_desc),
-        SeedExercise(R.string.seed_pullups_name, R.string.seed_pullups_muscles, R.string.seed_pullups_desc, bodyweight = true)
-    )
-
-    fun exercises(context: Context): List<Exercise> = defs.map {
+    /** Seeds the built-in library in the current language; display is re-localized via SeedCatalog. */
+    fun exercises(context: Context): List<Exercise> = SeedCatalog.entries.values.map {
         Exercise(
             name = context.getString(it.nameRes),
             muscleGroups = context.getString(it.musclesRes),

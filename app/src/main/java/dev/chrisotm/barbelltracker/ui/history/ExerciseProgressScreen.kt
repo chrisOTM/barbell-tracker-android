@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -70,7 +72,10 @@ fun ExerciseProgressScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(data.exerciseName.ifBlank { stringResource(R.string.progress_title) }) },
+                title = {
+                    val name = SeedCatalog.localizedName(LocalContext.current, data.exerciseName)
+                    Text(name.ifBlank { stringResource(R.string.progress_title) })
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))

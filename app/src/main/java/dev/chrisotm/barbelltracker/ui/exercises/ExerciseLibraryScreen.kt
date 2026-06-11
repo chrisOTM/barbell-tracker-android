@@ -23,11 +23,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -43,6 +46,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseLibraryViewModel @Inject constructor(
+    @ApplicationContext private val context: android.content.Context,
     repository: ExerciseRepository
 ) : ViewModel() {
     val query = MutableStateFlow("")
@@ -50,8 +54,11 @@ class ExerciseLibraryViewModel @Inject constructor(
     val exercises = combine(repository.observeAll(), query) { list, q ->
         if (q.isBlank()) list
         else list.filter {
-            it.name.contains(q, ignoreCase = true) ||
-                it.muscleGroups.contains(q, ignoreCase = true)
+            val name = SeedCatalog.localizedName(context, it.name)
+            val muscles = SeedCatalog.localizedMuscles(context, it.name, it.muscleGroups)
+            name.contains(q, ignoreCase = true) ||
+                muscles.contains(q, ignoreCase = true) ||
+                it.name.contains(q, ignoreCase = true)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }
@@ -104,22 +111,26 @@ fun ExerciseLibraryScreen(
 
 @Composable
 private fun ExerciseRow(exercise: Exercise, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val name = SeedCatalog.localizedName(context, exercise.name)
+    val muscles = SeedCatalog.localizedMuscles(context, exercise.name, exercise.muscleGroups)
+    val description = SeedCatalog.localizedDescription(context, exercise.name, exercise.description)
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
         Column(Modifier.padding(16.dp)) {
-            Text(exercise.name, style = MaterialTheme.typography.titleMedium)
-            if (exercise.muscleGroups.isNotBlank()) {
+            Text(name, style = MaterialTheme.typography.titleMedium)
+            if (muscles.isNotBlank()) {
                 Text(
-                    exercise.muscleGroups,
+                    muscles,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-            if (exercise.description.isNotBlank()) {
+            if (description.isNotBlank()) {
                 Text(
-                    exercise.description,
+                    description,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

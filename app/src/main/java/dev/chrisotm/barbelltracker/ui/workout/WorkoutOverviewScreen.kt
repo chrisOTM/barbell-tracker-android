@@ -21,11 +21,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -83,7 +85,10 @@ fun WorkoutOverviewScreen(
                     val rest = RestDefaults.effective(c.restSeconds, c.sets, c.reps)
                     Card(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Column(Modifier.padding(16.dp)) {
-                            Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                SeedCatalog.localizedName(LocalContext.current, item.exercise.name),
+                                style = MaterialTheme.typography.titleMedium
+                            )
                             Text(
                                 "${c.sets}×${c.reps}" +
                                     (c.targetWeightKg?.let { " · ${formatWeight(it)}" }

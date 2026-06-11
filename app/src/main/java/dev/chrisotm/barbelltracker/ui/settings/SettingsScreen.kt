@@ -1,15 +1,19 @@
 package dev.chrisotm.barbelltracker.ui.settings
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,9 +24,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
+import dev.chrisotm.barbelltracker.BuildConfig
 import dev.chrisotm.barbelltracker.R
 
 private data class LanguageOption(val tag: String, val labelRes: Int)
@@ -78,6 +84,36 @@ fun SettingsScreen(onBack: () -> Unit) {
                     )
                 }
             }
+
+            HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
+            AboutSection()
         }
     }
+}
+
+private const val REPO_URL = "https://github.com/chrisOTM/barbell-tracker-android"
+
+@Composable
+private fun AboutSection() {
+    val uriHandler = LocalUriHandler.current
+    Text(stringResource(R.string.about), style = MaterialTheme.typography.titleMedium)
+    Spacer(Modifier.height(8.dp))
+    Text(
+        stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+        style = MaterialTheme.typography.bodyLarge
+    )
+    Text(
+        stringResource(R.string.about_developer, "ChrisOTM"),
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(top = 4.dp)
+    )
+    Text(
+        stringResource(R.string.about_repository),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .clickable { uriHandler.openUri(REPO_URL) }
+    )
 }

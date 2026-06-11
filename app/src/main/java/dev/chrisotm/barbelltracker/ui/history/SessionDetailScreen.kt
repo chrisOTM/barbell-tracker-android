@@ -21,11 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -83,7 +85,7 @@ fun SessionDetailScreen(
                 byExercise.forEach { (exerciseId, sets) ->
                     item {
                         ExerciseBlock(
-                            name = sets.first().exerciseName,
+                            name = SeedCatalog.localizedName(LocalContext.current, sets.first().exerciseName),
                             sets = sets,
                             onOpenProgress = { onOpenProgress(exerciseId) }
                         )

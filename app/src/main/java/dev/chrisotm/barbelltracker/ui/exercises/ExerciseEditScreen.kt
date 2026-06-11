@@ -28,6 +28,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.repo.ExerciseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +47,7 @@ data class ExerciseEditState(
 
 @HiltViewModel
 class ExerciseEditViewModel @Inject constructor(
+    @ApplicationContext private val context: android.content.Context,
     private val repository: ExerciseRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -57,11 +60,12 @@ class ExerciseEditViewModel @Inject constructor(
         if (exerciseId != 0L) {
             viewModelScope.launch {
                 repository.getById(exerciseId)?.let { e ->
+                    // Show built-in exercises in the active language.
                     state.value = ExerciseEditState(
                         id = e.id,
-                        name = e.name,
-                        muscleGroups = e.muscleGroups,
-                        description = e.description,
+                        name = SeedCatalog.localizedName(context, e.name),
+                        muscleGroups = SeedCatalog.localizedMuscles(context, e.name, e.muscleGroups),
+                        description = SeedCatalog.localizedDescription(context, e.name, e.description),
                         isCustom = e.isCustom,
                         isBodyweight = e.isBodyweight
                     )

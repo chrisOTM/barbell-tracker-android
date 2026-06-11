@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.SessionSet
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.repo.PlanRepository
@@ -50,6 +52,7 @@ data class ActiveUiState(
 
 @HiltViewModel
 class ActiveWorkoutViewModel @Inject constructor(
+    @ApplicationContext private val context: android.content.Context,
     private val planRepository: PlanRepository,
     private val sessionRepository: SessionRepository,
     savedStateHandle: SavedStateHandle
@@ -85,7 +88,7 @@ class ActiveWorkoutViewModel @Inject constructor(
             ActiveExercise(
                 workoutExerciseId = c.id,
                 exerciseId = item.exercise.id,
-                name = item.exercise.name,
+                name = SeedCatalog.localizedName(context, item.exercise.name),
                 plannedReps = c.reps,
                 restSeconds = RestDefaults.effective(c.restSeconds, c.sets, c.reps),
                 weightKg = startWeight,

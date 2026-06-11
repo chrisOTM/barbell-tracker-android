@@ -34,11 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Workout
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExerciseWithExercise
@@ -219,7 +221,10 @@ private fun ExerciseConfigRow(
     Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    SeedCatalog.localizedName(LocalContext.current, item.exercise.name),
+                    style = MaterialTheme.typography.titleMedium
+                )
                 Text(
                     "${c.sets}×${c.reps}$weightText · " +
                         stringResource(R.string.rest_value, formatDuration(rest)),

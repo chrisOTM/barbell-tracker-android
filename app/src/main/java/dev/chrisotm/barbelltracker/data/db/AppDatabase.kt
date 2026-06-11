@@ -37,15 +37,16 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun workoutExerciseDao(): WorkoutExerciseDao
     abstract fun sessionDao(): SessionDao
 
-    /** Seeds the predefined exercise library on first creation (US-1.1). */
+    /** Seeds the predefined exercise library on first creation, in the active language (US-1.1). */
     class SeedCallback(
+        private val context: android.content.Context,
         private val scope: CoroutineScope,
         private val exerciseDaoProvider: Provider<ExerciseDao>
     ) : Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             scope.launch {
-                exerciseDaoProvider.get().insertAll(SeedData.exercises)
+                exerciseDaoProvider.get().insertAll(SeedData.exercises(context))
             }
         }
     }

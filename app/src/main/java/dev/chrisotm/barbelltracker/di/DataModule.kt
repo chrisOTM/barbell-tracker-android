@@ -45,7 +45,7 @@ object DataModule {
         AppDatabase::class.java,
         "barbell_tracker.db"
     )
-        .addCallback(AppDatabase.SeedCallback(scope, exerciseDaoProvider))
+        .addCallback(AppDatabase.SeedCallback(context, scope, exerciseDaoProvider))
         .build()
 
     @Provides fun provideExerciseDao(db: AppDatabase): ExerciseDao = db.exerciseDao()

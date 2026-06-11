@@ -34,9 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.chrisotm.barbelltracker.R
 import dev.chrisotm.barbelltracker.data.entity.Workout
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExerciseWithExercise
@@ -65,18 +67,18 @@ fun PlanEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(plan?.plan?.name ?: "Plan") },
+                title = { Text(plan?.plan?.name ?: stringResource(R.string.plan)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { renaming = true }) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Umbenennen")
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.rename))
                     }
                     IconButton(onClick = { deletingPlan = true }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Plan löschen")
+                        Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete_plan))
                     }
                 }
             )
@@ -105,7 +107,7 @@ fun PlanEditScreen(
                 OutlinedButton(
                     onClick = { viewModel.addWorkout() },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("Workout hinzufügen") }
+                ) { Text(stringResource(R.string.add_workout)) }
             }
         }
     }
@@ -119,9 +121,9 @@ fun PlanEditScreen(
     }
     if (deletingPlan) {
         ConfirmDialog(
-            title = "Plan löschen?",
-            message = "Der Plan und alle seine Workouts werden entfernt.",
-            confirmLabel = "Löschen",
+            title = stringResource(R.string.delete_plan_title),
+            message = stringResource(R.string.delete_plan_msg),
+            confirmLabel = stringResource(R.string.delete),
             onConfirm = { deletingPlan = false; viewModel.deletePlan(onBack) },
             onDismiss = { deletingPlan = false }
         )
@@ -164,12 +166,12 @@ private fun WorkoutCard(
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "Workout ${workout.workout.label}",
+                    stringResource(R.string.workout_label, workout.workout.label),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = onDeleteWorkout) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Workout löschen")
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete_workout))
                 }
             }
             workout.exercises.forEachIndexed { index, item ->
@@ -187,14 +189,14 @@ private fun WorkoutCard(
             OutlinedButton(
                 onClick = onAddExercise,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            ) { Text("Übung hinzufügen") }
+            ) { Text(stringResource(R.string.add_exercise)) }
             FilledTonalButton(
                 onClick = onStart,
                 enabled = workout.exercises.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             ) {
                 Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                Text("  Starten")
+                Text("  " + stringResource(R.string.start))
             }
         }
     }
@@ -219,26 +221,27 @@ private fun ExerciseConfigRow(
             Column(Modifier.weight(1f)) {
                 Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "${c.sets}×${c.reps}$weightText · Pause ${formatDuration(rest)}",
+                    "${c.sets}×${c.reps}$weightText · " +
+                        stringResource(R.string.rest_value, formatDuration(rest)),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             IconButton(onClick = onUp, enabled = !isFirst) {
-                Icon(Icons.Filled.ArrowUpward, contentDescription = "Nach oben")
+                Icon(Icons.Filled.ArrowUpward, contentDescription = stringResource(R.string.move_up))
             }
             IconButton(onClick = onDown, enabled = !isLast) {
-                Icon(Icons.Filled.ArrowDownward, contentDescription = "Nach unten")
+                Icon(Icons.Filled.ArrowDownward, contentDescription = stringResource(R.string.move_down))
             }
         }
         Row {
             IconButton(onClick = onSwap) {
-                Icon(Icons.Filled.SwapHoriz, contentDescription = "Übung ersetzen")
+                Icon(Icons.Filled.SwapHoriz, contentDescription = stringResource(R.string.swap_exercise))
             }
             IconButton(onClick = onEdit) {
-                Icon(Icons.Filled.Edit, contentDescription = "Bearbeiten")
+                Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit))
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Filled.Delete, contentDescription = "Entfernen")
+                Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove))
             }
         }
     }

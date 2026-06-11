@@ -21,9 +21,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -62,10 +64,10 @@ fun WorkoutOverviewScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Workout ${workout?.workout?.label ?: ""}") },
+                title = { Text(stringResource(R.string.workout_label, workout?.workout?.label ?: "")) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -84,8 +86,9 @@ fun WorkoutOverviewScreen(
                             Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
                             Text(
                                 "${c.sets}×${c.reps}" +
-                                    (c.targetWeightKg?.let { " · ${formatWeight(it)}" } ?: " · Gewicht offen") +
-                                    " · Pause ${formatDuration(rest)}",
+                                    (c.targetWeightKg?.let { " · ${formatWeight(it)}" }
+                                        ?: " · ${stringResource(R.string.weight_open)}") +
+                                    " · " + stringResource(R.string.rest_value, formatDuration(rest)),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -99,7 +102,7 @@ fun WorkoutOverviewScreen(
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
                 Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                Text("  Workout starten")
+                Text("  " + stringResource(R.string.start_workout))
             }
         }
     }

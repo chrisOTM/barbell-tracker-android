@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.chrisotm.barbelltracker.R
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.domain.RestDefaults
@@ -33,7 +35,7 @@ fun RenameDialog(
     var text by remember { mutableStateOf(initial) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Plan umbenennen") },
+        title = { Text(stringResource(R.string.rename_plan_title)) },
         text = {
             OutlinedTextField(
                 value = text,
@@ -42,8 +44,8 @@ fun RenameDialog(
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        confirmButton = { TextButton(onClick = { onConfirm(text) }) { Text("Speichern") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Abbrechen") } }
+        confirmButton = { TextButton(onClick = { onConfirm(text) }) { Text(stringResource(R.string.save)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }
 
@@ -55,7 +57,7 @@ fun ExercisePickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Übung wählen") },
+        title = { Text(stringResource(R.string.choose_exercise)) },
         text = {
             LazyColumn(Modifier.heightIn(max = 400.dp)) {
                 items(library, key = { it.id }) { ex ->
@@ -74,7 +76,7 @@ fun ExercisePickerDialog(
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Schließen") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } }
     )
 }
 
@@ -92,18 +94,18 @@ fun ExerciseConfigDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Übung konfigurieren") },
+        title = { Text(stringResource(R.string.configure_exercise)) },
         text = {
             Column {
                 StepperField(
-                    label = "Sätze",
+                    label = stringResource(R.string.sets),
                     value = sets,
                     onValueChange = { sets = it.filter(Char::isDigit) },
                     onDecrement = { sets = ((sets.toIntOrNull() ?: 1) - 1).coerceAtLeast(1).toString() },
                     onIncrement = { sets = ((sets.toIntOrNull() ?: 0) + 1).toString() }
                 )
                 StepperField(
-                    label = "Wdh.",
+                    label = stringResource(R.string.reps_short),
                     value = reps,
                     onValueChange = { reps = it.filter(Char::isDigit) },
                     onDecrement = { reps = ((reps.toIntOrNull() ?: 1) - 1).coerceAtLeast(1).toString() },
@@ -111,7 +113,7 @@ fun ExerciseConfigDialog(
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 StepperField(
-                    label = "Gewicht (kg)",
+                    label = stringResource(R.string.weight_kg),
                     value = weight,
                     onValueChange = { weight = it.filter { c -> c.isDigit() || c == '.' } },
                     onDecrement = { weight = trimNumber(((weight.toDoubleOrNull() ?: 0.0) - 2.5).coerceAtLeast(0.0)) },
@@ -120,7 +122,7 @@ fun ExerciseConfigDialog(
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 StepperField(
-                    label = "Pause (Sek.)",
+                    label = stringResource(R.string.rest_seconds),
                     value = rest,
                     onValueChange = { rest = it.filter(Char::isDigit) },
                     onDecrement = { rest = ((rest.toIntOrNull() ?: 30) - 15).coerceAtLeast(0).toString() },
@@ -139,9 +141,9 @@ fun ExerciseConfigDialog(
                         restSeconds = rest.toIntOrNull()
                     )
                 )
-            }) { Text("Speichern") }
+            }) { Text(stringResource(R.string.save)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Abbrechen") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }
 

@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -61,10 +63,10 @@ fun SessionDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Trainingseinheit") },
+                title = { Text(stringResource(R.string.session_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -112,13 +114,15 @@ private fun ExerciseBlock(name: String, sets: List<SessionSet>, onOpenProgress: 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 IconButton(onClick = onOpenProgress) {
-                    Icon(Icons.Filled.ShowChart, contentDescription = "Fortschritt")
+                    Icon(Icons.Filled.ShowChart, contentDescription = stringResource(R.string.progress))
                 }
             }
             sets.sortedBy { it.setIndex }.forEach { set ->
                 Text(
-                    "Satz ${set.setIndex + 1}: ${set.actualReps}/${set.plannedReps} Wdh. · " +
-                        formatWeight(set.weightKg) + (if (set.success) "  ✓" else "  ✗"),
+                    stringResource(
+                        R.string.session_set_line,
+                        set.setIndex + 1, set.actualReps, set.plannedReps, formatWeight(set.weightKg)
+                    ) + (if (set.success) "  ✓" else "  ✗"),
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (set.success) Success else Failure
                 )

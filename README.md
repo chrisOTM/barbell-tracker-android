@@ -5,13 +5,30 @@
 
 Native Android app for structured barbell training: plans, guided workout execution with
 rest timer, set logging, weight progression, and a training diary. Fully offline — no
-login, cloud, ads, or tracking.
+login, cloud, ads, or tracking. Available in **English and German**.
 
 Built from `spec/Barbell-Tracker-requirements.md`.
 
 ## Stack
 Kotlin · Jetpack Compose (Material 3) · Navigation-Compose · Room (KSP) · Hilt · MVVM + Repository.
 `minSdk 26`, `compileSdk 36`, `targetSdk 36`.
+
+## Languages (i18n)
+English and German. The language is switchable at runtime on the **Settings** screen
+(gear icon on the home screen) and **defaults to English on first launch**, regardless of the
+device language.
+
+- UI strings live in `res/values/strings.xml` (English, base) and `res/values-de/strings.xml`
+  (German).
+- Per-app locale uses AndroidX AppCompat: `AppCompatDelegate.setApplicationLocales(...)` to switch,
+  with the `AppLocalesMetadataHolderService` (`autoStoreLocales=true`) in the manifest persisting the
+  choice on API < 33. `MainActivity` extends `AppCompatActivity` so this applies on all API levels.
+- First-launch English default is set once in `BarbellApp` (guarded by a SharedPreferences flag);
+  afterwards the user's choice is restored automatically.
+- The seeded exercise library + plan templates are localized too (`SeedData`/`PlanTemplates` read
+  from string resources): the library is populated in the active language **on first launch**.
+  Switching language later does not re-translate already-stored exercises — they are editable user
+  data by then.
 
 ## Architecture
 ```

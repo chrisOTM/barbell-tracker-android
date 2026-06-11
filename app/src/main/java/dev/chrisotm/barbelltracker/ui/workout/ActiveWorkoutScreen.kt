@@ -35,10 +35,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
 import dev.chrisotm.barbelltracker.ui.components.SetProgressDots
@@ -68,11 +70,11 @@ fun ActiveWorkoutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Workout ${state.workoutLabel}") },
+                title = { Text(stringResource(R.string.workout_label, state.workoutLabel)) },
                 actions = {
                     if (state.phase != Phase.FINISHED) {
                         IconButton(onClick = { confirmEnd = true }) {
-                            Icon(Icons.Filled.Close, contentDescription = "Workout beenden")
+                            Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.end_workout))
                         }
                     }
                 }
@@ -108,9 +110,9 @@ fun ActiveWorkoutScreen(
 
     if (confirmEnd) {
         ConfirmDialog(
-            title = "Wirklich beenden?",
-            message = "Bereits absolvierte Sätze werden gespeichert.",
-            confirmLabel = "Beenden",
+            title = stringResource(R.string.end_workout_title),
+            message = stringResource(R.string.end_workout_msg),
+            confirmLabel = stringResource(R.string.end),
             onConfirm = { confirmEnd = false; viewModel.endEarly() },
             onDismiss = { confirmEnd = false }
         )
@@ -146,10 +148,10 @@ private fun RunningContent(
         }
         Spacer(Modifier.height(16.dp))
         Text(
-            "Satz ${state.setNumber} von ${state.setCount}",
+            stringResource(R.string.set_counter, state.setNumber, state.setCount),
             style = MaterialTheme.typography.titleLarge
         )
-        Text("${state.plannedReps} Wdh.", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(R.string.reps_count, state.plannedReps), style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(16.dp))
         SetProgressDots(
             total = state.setCount,
@@ -162,7 +164,7 @@ private fun RunningContent(
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedButton(onClick = { actualReps = (actualReps - 1).coerceAtLeast(0) }) { Text("−") }
             Text(
-                "  $actualReps Wdh.  ",
+                "  " + stringResource(R.string.reps_count, actualReps) + "  ",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -177,7 +179,7 @@ private fun RunningContent(
             },
             colors = ButtonDefaults.buttonColors(containerColor = Success),
             modifier = Modifier.fillMaxWidth().height(60.dp)
-        ) { Text("✓ Geschafft", style = MaterialTheme.typography.titleLarge) }
+        ) { Text(stringResource(R.string.done_success), style = MaterialTheme.typography.titleLarge) }
         Spacer(Modifier.height(12.dp))
         Button(
             onClick = {
@@ -186,7 +188,7 @@ private fun RunningContent(
             },
             colors = ButtonDefaults.buttonColors(containerColor = Failure),
             modifier = Modifier.fillMaxWidth().height(60.dp)
-        ) { Text("✗ Nicht geschafft", style = MaterialTheme.typography.titleLarge) }
+        ) { Text(stringResource(R.string.failed_set), style = MaterialTheme.typography.titleLarge) }
     }
 }
 
@@ -203,7 +205,7 @@ private fun RestingContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Pause", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.rest_title), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(8.dp))
         Text(
             formatDuration(state.remainingSeconds),
@@ -213,7 +215,7 @@ private fun RestingContent(
         Spacer(Modifier.height(24.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = onTogglePause) {
-                Text(if (state.paused) "Fortsetzen" else "Pause")
+                Text(stringResource(if (state.paused) R.string.resume else R.string.pause))
             }
             OutlinedButton(onClick = onAddRest) { Text("+15s") }
         }
@@ -221,7 +223,7 @@ private fun RestingContent(
         Button(
             onClick = onNext,
             modifier = Modifier.fillMaxWidth().height(60.dp)
-        ) { Text("Nächster Satz", style = MaterialTheme.typography.titleLarge) }
+        ) { Text(stringResource(R.string.next_set), style = MaterialTheme.typography.titleLarge) }
     }
 }
 
@@ -245,13 +247,13 @@ private fun ConfirmNextContent(
         Spacer(Modifier.height(8.dp))
         if (state.finishedExerciseName.isNotBlank()) {
             Text(
-                "${state.finishedExerciseName} abgeschlossen",
+                stringResource(R.string.exercise_done, state.finishedExerciseName),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center
             )
         }
         Spacer(Modifier.height(32.dp))
-        Text("Nächste Übung", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.next_exercise), style = MaterialTheme.typography.titleLarge)
         Text(
             state.nextExerciseName,
             style = MaterialTheme.typography.headlineMedium,
@@ -261,6 +263,6 @@ private fun ConfirmNextContent(
         Button(
             onClick = onStartNext,
             modifier = Modifier.fillMaxWidth().height(64.dp)
-        ) { Text("Nächste Übung starten", style = MaterialTheme.typography.titleLarge) }
+        ) { Text(stringResource(R.string.start_next_exercise), style = MaterialTheme.typography.titleLarge) }
     }
 }

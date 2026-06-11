@@ -9,6 +9,7 @@ object Routes {
     const val WORKOUT_OVERVIEW = "workout_overview"    // /{workoutId}
     const val ACTIVE_WORKOUT = "active_workout"        // /{workoutId}
     const val HISTORY = "history"
+    const val SETTINGS = "settings"
     const val SESSION_DETAIL = "session_detail"        // /{sessionId}
     const val EXERCISE_PROGRESS = "exercise_progress"  // /{exerciseId}
 

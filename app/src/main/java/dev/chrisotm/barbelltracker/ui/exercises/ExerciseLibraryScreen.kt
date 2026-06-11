@@ -23,9 +23,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -68,17 +70,17 @@ fun ExerciseLibraryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Übungen") },
+                title = { Text(stringResource(R.string.exercises_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAdd) {
-                Icon(Icons.Filled.Add, contentDescription = "Übung hinzufügen")
+                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_exercise))
             }
         }
     ) { padding ->
@@ -87,7 +89,7 @@ fun ExerciseLibraryScreen(
                 value = query,
                 onValueChange = { viewModel.query.value = it },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                placeholder = { Text("Suchen") },
+                placeholder = { Text(stringResource(R.string.search)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )

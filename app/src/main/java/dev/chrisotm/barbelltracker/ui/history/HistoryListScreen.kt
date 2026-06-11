@@ -25,9 +25,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -80,10 +82,10 @@ fun HistoryListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Verlauf") },
+                title = { Text(stringResource(R.string.history_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -93,7 +95,7 @@ fun HistoryListScreen(
             OutlinedTextField(
                 value = ui.dateQuery,
                 onValueChange = { viewModel.dateQuery.value = it },
-                label = { Text("Datum suchen (TT.MM.JJJJ)") },
+                label = { Text(stringResource(R.string.search_date)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
@@ -106,7 +108,7 @@ fun HistoryListScreen(
                     FilterChip(
                         selected = ui.planFilter == null,
                         onClick = { viewModel.planFilter.value = null },
-                        label = { Text("Alle") }
+                        label = { Text(stringResource(R.string.filter_all)) }
                     )
                     ui.plans.forEach { p ->
                         FilterChip(
@@ -145,7 +147,7 @@ private fun SessionRow(item: SessionWithSets, onClick: () -> Unit) {
             byExercise.forEach { (name, sets) ->
                 val top = sets.maxByOrNull { it.weightKg }?.weightKg ?: 0.0
                 Text(
-                    "$name — ${sets.size} Sätze · ${formatWeight(top)}",
+                    stringResource(R.string.session_summary, name, sets.size, formatWeight(top)),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

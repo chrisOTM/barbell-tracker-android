@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -68,10 +70,10 @@ fun ExerciseProgressScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(data.exerciseName.ifBlank { "Fortschritt" }) },
+                title = { Text(data.exerciseName.ifBlank { stringResource(R.string.progress_title) }) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -81,16 +83,18 @@ fun ExerciseProgressScreen(
             if (data.points.size < 2) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        "Noch nicht genug Daten für ein Diagramm.",
+                        stringResource(R.string.not_enough_data),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
             } else {
-                Text("Gewicht über Zeit", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.weight_over_time), style = MaterialTheme.typography.titleMedium)
                 LineChart(points = data.points, modifier = Modifier.padding(vertical = 16.dp))
                 Text(
-                    "Von ${formatWeight(data.topWeights.first())} auf " +
-                        formatWeight(data.topWeights.last()),
+                    stringResource(
+                        R.string.progress_from_to,
+                        formatWeight(data.topWeights.first()), formatWeight(data.topWeights.last())
+                    ),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

@@ -19,9 +19,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -118,16 +120,16 @@ fun ExerciseEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (viewModel.isNew) "Neue Übung" else "Übung bearbeiten") },
+                title = { Text(stringResource(if (viewModel.isNew) R.string.new_exercise else R.string.edit_exercise)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     if (!viewModel.isNew && state.isCustom) {
                         IconButton(onClick = { viewModel.delete(onBack) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Löschen")
+                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                         }
                     }
                 }
@@ -143,28 +145,28 @@ fun ExerciseEditScreen(
             OutlinedTextField(
                 value = state.name,
                 onValueChange = viewModel::onName,
-                label = { Text("Name *") },
+                label = { Text(stringResource(R.string.name_required)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = state.muscleGroups,
                 onValueChange = viewModel::onMuscle,
-                label = { Text("Muskelgruppe") },
+                label = { Text(stringResource(R.string.muscle_group)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
             )
             OutlinedTextField(
                 value = state.description,
                 onValueChange = viewModel::onDescription,
-                label = { Text("Beschreibung") },
+                label = { Text(stringResource(R.string.description)) },
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
             )
             Button(
                 onClick = { viewModel.save(onBack) },
                 enabled = state.name.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
-            ) { Text("Speichern") }
+            ) { Text(stringResource(R.string.save)) }
         }
     }
 }

@@ -1,4 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Barbell Tracker</string>
+
+    <!-- common -->
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="ok">OK</string>
+    <string name="close">Close</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="less">Less</string>
+    <string name="more">More</string>
+
+    <!-- plans list -->
+    <string name="nav_exercises">Exercises</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    <string name="create_plan">Create plan</string>
+    <string name="plans_empty">No training plan yet.\nTap + to start.</string>
+
+    <!-- plan create -->
+    <string name="plan_create_title">Create plan</string>
+    <string name="custom_plan">Custom plan</string>
+    <string name="plan_name">Plan name</string>
+    <string name="create_empty_plan">Create empty plan</string>
+    <string name="from_template">From template</string>
+    <string name="use_template">Use this template</string>
+    <string name="new_plan_default">New plan</string>
+    <string name="template_workout_line">Workout %1$s: %2$s</string>
+
+    <!-- plan edit -->
+    <string name="plan">Plan</string>
+    <string name="rename">Rename</string>
+    <string name="delete_plan">Delete plan</string>
+    <string name="delete_plan_title">Delete plan?</string>
+    <string name="delete_plan_msg">The plan and all its workouts will be removed.</string>
+    <string name="workout_label">Workout %1$s</string>
+    <string name="delete_workout">Delete workout</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="swap_exercise">Replace exercise</string>
+    <string name="add_exercise">Add exercise</string>
+    <string name="add_workout">Add workout</string>
+    <string name="start">Start</string>
+    <string name="rest_value">rest %1$s</string>
+
+    <!-- plan edit dialogs -->
+    <string name="rename_plan_title">Rename plan</string>
+    <string name="choose_exercise">Choose exercise</string>
+    <string name="configure_exercise">Configure exercise</string>
+    <string name="sets">Sets</string>
+    <string name="reps_short">Reps</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="rest_seconds">Rest (sec)</string>
+
+    <!-- exercise library / edit -->
+    <string name="exercises_title">Exercises</string>
+    <string name="search">Search</string>
+    <string name="new_exercise">New exercise</string>
+    <string name="edit_exercise">Edit exercise</string>
+    <string name="name_required">Name *</string>
+    <string name="muscle_group">Muscle group</string>
+    <string name="description">Description</string>
+
+    <!-- workout overview -->
+    <string name="weight_open">weight not set</string>
+    <string name="start_workout">Start workout</string>
+
+    <!-- active workout -->
+    <string name="end_workout">End workout</string>
+    <string name="end_workout_title">Really end?</string>
+    <string name="end_workout_msg">Sets already completed will be saved.</string>
+    <string name="end">End</string>
+    <string name="set_counter">Set %1$d of %2$d</string>
+    <string name="reps_count">%1$d reps</string>
+    <string name="done_success">✓ Done</string>
+    <string name="failed_set">✗ Failed</string>
+    <string name="rest_title">Rest</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="next_set">Next set</string>
+    <string name="next_exercise">Next exercise</string>
+    <string name="exercise_done">%1$s done</string>
+    <string name="start_next_exercise">Start next exercise</string>
+    <string name="adjust_weight">Adjust weight</string>
+
+    <!-- finish / progression -->
+    <string name="workout_complete">Workout complete!</string>
+    <string name="no_sets_logged">No sets logged.</string>
+    <string name="suggestion_next">Suggestion for next time:</string>
+    <string name="current_weight">Current: %1$s</string>
+    <string name="next_weight">Next weight</string>
+    <string name="apply_finish">Apply &amp; done</string>
+
+    <!-- history -->
+    <string name="history_title">History</string>
+    <string name="search_date">Search date (DD.MM.YYYY)</string>
+    <string name="filter_all">All</string>
+    <string name="session_summary">%1$s — %2$d sets · %3$s</string>
+
+    <!-- session detail -->
+    <string name="session_title">Training session</string>
+    <string name="progress">Progress</string>
+    <string name="session_set_line">Set %1$d: %2$d/%3$d reps · %4$s</string>
+
+    <!-- exercise progress -->
+    <string name="progress_title">Progress</string>
+    <string name="not_enough_data">Not enough data for a chart yet.</string>
+    <string name="weight_over_time">Weight over time</string>
+    <string name="progress_from_to">From %1$s to %2$s</string>
+
+    <!-- settings -->
+    <string name="settings_title">Settings</string>
+    <string name="language">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_german">German</string>
+
+    <!-- plan templates -->
+    <string name="seed_tpl_gk5x5">FB 5×5</string>
+    <string name="seed_tpl_gk3x8">FB 3×8</string>
+
+    <!-- seed exercise library -->
+    <string name="seed_back_squat_name">Barbell Back Squat</string>
+    <string name="seed_back_squat_muscles">Legs, glutes, core</string>
+    <string name="seed_back_squat_desc">Bar on the upper back, squat down until the hips drop below the knees, back straight, then drive back up under control.</string>
+
+    <string name="seed_bench_press_name">Bench Press</string>
+    <string name="seed_bench_press_muscles">Chest, triceps, shoulders</string>
+    <string name="seed_bench_press_desc">Lying on the flat bench, lower the bar to the chest and press straight up. Keep the shoulder blades pinched.</string>
+
+    <string name="seed_deadlift_name">Deadlift</string>
+    <string name="seed_deadlift_muscles">Back, legs, glutes</string>
+    <string name="seed_deadlift_desc">Lift the bar off the floor with a straight back and extending hips until you stand upright. Keep the bar close to the body.</string>
+
+    <string name="seed_barbell_row_name">Barbell Row</string>
+    <string name="seed_barbell_row_muscles">Back, biceps</string>
+    <string name="seed_barbell_row_desc">Bent over with a straight back, pull the bar to the lower chest, elbows close to the body.</string>
+
+    <string name="seed_ohp_name">Overhead Press</string>
+    <string name="seed_ohp_muscles">Shoulders, triceps</string>
+    <string name="seed_ohp_desc">From standing, press the bar from shoulder height straight overhead, core tight. Also Military / Overhead Press.</string>
+
+    <string name="seed_front_squat_name">Front Squat</string>
+    <string name="seed_front_squat_muscles">Legs, core</string>
+    <string name="seed_front_squat_desc">Rest the bar on the front shoulders, squat down upright and drive back up.</string>
+
+    <string name="seed_lunges_name">Barbell Lunges</string>
+    <string name="seed_lunges_muscles">Legs, glutes</string>
+    <string name="seed_lunges_desc">Bar on the back, take large alternating steps forward and lower deep, front knee over the foot.</string>
+
+    <string name="seed_good_mornings_name">Good Mornings</string>
+    <string name="seed_good_mornings_muscles">Hamstrings, lower back</string>
+    <string name="seed_good_mornings_desc">Bar on the back, hinge forward from the hips with a straight back, then stand back up.</string>
+
+    <string name="seed_rdl_name">Romanian Deadlift</string>
+    <string name="seed_rdl_muscles">Hamstrings, glutes, back</string>
+    <string name="seed_rdl_desc">From standing with slightly bent knees, lower the bar along the legs, hips back, then stand up.</string>
+
+    <string name="seed_one_arm_row_name">One-Arm Dumbbell Row</string>
+    <string name="seed_one_arm_row_muscles">Back, biceps</string>
+    <string name="seed_one_arm_row_desc">One hand and one knee on the bench, pull the dumbbell to the hip with the free hand.</string>
+
+    <string name="seed_pullups_name">Pull-ups</string>
+    <string name="seed_pullups_muscles">Back, biceps</string>
+    <string name="seed_pullups_desc">Hanging from the bar, pull the body up until the chin clears the bar, then lower under control.</string>
 </resources>

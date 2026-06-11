@@ -14,6 +14,7 @@ import dev.chrisotm.barbelltracker.ui.history.SessionDetailScreen
 import dev.chrisotm.barbelltracker.ui.plans.PlanCreateScreen
 import dev.chrisotm.barbelltracker.ui.plans.PlanEditScreen
 import dev.chrisotm.barbelltracker.ui.plans.PlansListScreen
+import dev.chrisotm.barbelltracker.ui.settings.SettingsScreen
 import dev.chrisotm.barbelltracker.ui.workout.ActiveWorkoutScreen
 import dev.chrisotm.barbelltracker.ui.workout.WorkoutOverviewScreen
 
@@ -28,8 +29,13 @@ fun AppNavHost() {
                 onOpenPlan = { nav.navigate(Routes.planEdit(it)) },
                 onCreatePlan = { nav.navigate(Routes.PLAN_CREATE) },
                 onOpenExercises = { nav.navigate(Routes.EXERCISES) },
-                onOpenHistory = { nav.navigate(Routes.HISTORY) }
+                onOpenHistory = { nav.navigate(Routes.HISTORY) },
+                onOpenSettings = { nav.navigate(Routes.SETTINGS) }
             )
+        }
+
+        composable(Routes.SETTINGS) {
+            SettingsScreen(onBack = { nav.popBackStack() })
         }
 
         composable(Routes.EXERCISES) {

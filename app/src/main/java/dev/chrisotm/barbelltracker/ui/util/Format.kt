@@ -18,8 +18,10 @@ fun formatDuration(totalSeconds: Int): String {
     return "%d:%02d".format(m, s)
 }
 
-private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.GERMANY)
-private val dayFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
+// Built per call so they follow the app's active locale (date/time still use the
+// numeric dd.MM.yyyy layout the history search expects).
+fun formatDateTime(epochMillis: Long): String =
+    SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date(epochMillis))
 
-fun formatDateTime(epochMillis: Long): String = dateFormat.format(Date(epochMillis))
-fun formatDay(epochMillis: Long): String = dayFormat.format(Date(epochMillis))
+fun formatDay(epochMillis: Long): String =
+    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date(epochMillis))

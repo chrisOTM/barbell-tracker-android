@@ -17,9 +17,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import dev.chrisotm.barbelltracker.R
 
 /** Numeric stepper used for sets / reps / weight (US-1.4, US-3.1). */
 @Composable
@@ -34,7 +36,7 @@ fun StepperField(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         FilledTonalIconButton(onClick = onDecrement) {
-            Icon(Icons.Filled.Remove, contentDescription = "Weniger")
+            Icon(Icons.Filled.Remove, contentDescription = stringResource(R.string.less))
         }
         Spacer(Modifier.width(8.dp))
         OutlinedTextField(
@@ -49,7 +51,7 @@ fun StepperField(
         )
         Spacer(Modifier.width(8.dp))
         FilledTonalIconButton(onClick = onIncrement) {
-            Icon(Icons.Filled.Add, contentDescription = "Mehr")
+            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.more))
         }
     }
 }
@@ -58,8 +60,8 @@ fun StepperField(
 fun ConfirmDialog(
     title: String,
     message: String,
-    confirmLabel: String = "OK",
-    dismissLabel: String = "Abbrechen",
+    confirmLabel: String = stringResource(R.string.ok),
+    dismissLabel: String = stringResource(R.string.cancel),
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Barbell Tracker</string>
+
+    <!-- common -->
+    <string name="back">Zurück</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="delete">Löschen</string>
+    <string name="ok">OK</string>
+    <string name="close">Schließen</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="remove">Entfernen</string>
+    <string name="less">Weniger</string>
+    <string name="more">Mehr</string>
+
+    <!-- plans list -->
+    <string name="nav_exercises">Übungen</string>
+    <string name="nav_history">Verlauf</string>
+    <string name="nav_settings">Einstellungen</string>
+    <string name="create_plan">Plan erstellen</string>
+    <string name="plans_empty">Noch kein Trainingsplan.\nTippe auf +, um zu starten.</string>
+
+    <!-- plan create -->
+    <string name="plan_create_title">Plan erstellen</string>
+    <string name="custom_plan">Eigener Plan</string>
+    <string name="plan_name">Plan-Name</string>
+    <string name="create_empty_plan">Leeren Plan erstellen</string>
+    <string name="from_template">Aus Vorlage</string>
+    <string name="use_template">Diese Vorlage verwenden</string>
+    <string name="new_plan_default">Neuer Plan</string>
+    <string name="template_workout_line">Workout %1$s: %2$s</string>
+
+    <!-- plan edit -->
+    <string name="plan">Plan</string>
+    <string name="rename">Umbenennen</string>
+    <string name="delete_plan">Plan löschen</string>
+    <string name="delete_plan_title">Plan löschen?</string>
+    <string name="delete_plan_msg">Der Plan und alle seine Workouts werden entfernt.</string>
+    <string name="workout_label">Workout %1$s</string>
+    <string name="delete_workout">Workout löschen</string>
+    <string name="move_up">Nach oben</string>
+    <string name="move_down">Nach unten</string>
+    <string name="swap_exercise">Übung ersetzen</string>
+    <string name="add_exercise">Übung hinzufügen</string>
+    <string name="add_workout">Workout hinzufügen</string>
+    <string name="start">Starten</string>
+    <string name="rest_value">Pause %1$s</string>
+
+    <!-- plan edit dialogs -->
+    <string name="rename_plan_title">Plan umbenennen</string>
+    <string name="choose_exercise">Übung wählen</string>
+    <string name="configure_exercise">Übung konfigurieren</string>
+    <string name="sets">Sätze</string>
+    <string name="reps_short">Wdh.</string>
+    <string name="weight_kg">Gewicht (kg)</string>
+    <string name="rest_seconds">Pause (Sek.)</string>
+
+    <!-- exercise library / edit -->
+    <string name="exercises_title">Übungen</string>
+    <string name="search">Suchen</string>
+    <string name="new_exercise">Neue Übung</string>
+    <string name="edit_exercise">Übung bearbeiten</string>
+    <string name="name_required">Name *</string>
+    <string name="muscle_group">Muskelgruppe</string>
+    <string name="description">Beschreibung</string>
+
+    <!-- workout overview -->
+    <string name="weight_open">Gewicht offen</string>
+    <string name="start_workout">Workout starten</string>
+
+    <!-- active workout -->
+    <string name="end_workout">Workout beenden</string>
+    <string name="end_workout_title">Wirklich beenden?</string>
+    <string name="end_workout_msg">Bereits absolvierte Sätze werden gespeichert.</string>
+    <string name="end">Beenden</string>
+    <string name="set_counter">Satz %1$d von %2$d</string>
+    <string name="reps_count">%1$d Wdh.</string>
+    <string name="done_success">✓ Geschafft</string>
+    <string name="failed_set">✗ Nicht geschafft</string>
+    <string name="rest_title">Pause</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="next_set">Nächster Satz</string>
+    <string name="next_exercise">Nächste Übung</string>
+    <string name="exercise_done">%1$s abgeschlossen</string>
+    <string name="start_next_exercise">Nächste Übung starten</string>
+    <string name="adjust_weight">Gewicht anpassen</string>
+
+    <!-- finish / progression -->
+    <string name="workout_complete">Workout abgeschlossen!</string>
+    <string name="no_sets_logged">Keine Sätze protokolliert.</string>
+    <string name="suggestion_next">Vorschlag für das nächste Mal:</string>
+    <string name="current_weight">Aktuell: %1$s</string>
+    <string name="next_weight">Nächstes Gewicht</string>
+    <string name="apply_finish">Übernehmen &amp; Fertig</string>
+
+    <!-- history -->
+    <string name="history_title">Verlauf</string>
+    <string name="search_date">Datum suchen (TT.MM.JJJJ)</string>
+    <string name="filter_all">Alle</string>
+    <string name="session_summary">%1$s — %2$d Sätze · %3$s</string>
+
+    <!-- session detail -->
+    <string name="session_title">Trainingseinheit</string>
+    <string name="progress">Fortschritt</string>
+    <string name="session_set_line">Satz %1$d: %2$d/%3$d Wdh. · %4$s</string>
+
+    <!-- exercise progress -->
+    <string name="progress_title">Fortschritt</string>
+    <string name="not_enough_data">Noch nicht genug Daten für ein Diagramm.</string>
+    <string name="weight_over_time">Gewicht über Zeit</string>
+    <string name="progress_from_to">Von %1$s auf %2$s</string>
+
+    <!-- settings -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="language">Sprache</string>
+    <string name="language_english">Englisch</string>
+    <string name="language_german">Deutsch</string>
+
+    <!-- plan templates -->
+    <string name="seed_tpl_gk5x5">GK 5×5</string>
+    <string name="seed_tpl_gk3x8">GK 3×8</string>
+
+    <!-- seed exercise library -->
+    <string name="seed_back_squat_name">Langhantel-Kniebeuge</string>
+    <string name="seed_back_squat_muscles">Beine, Gesäß, Rumpf</string>
+    <string name="seed_back_squat_desc">Langhantel im Nacken, tief in die Hocke gehen bis die Hüfte unter Kniehöhe ist, Rücken gerade, kontrolliert wieder hochdrücken.</string>
+
+    <string name="seed_bench_press_name">Bankdrücken</string>
+    <string name="seed_bench_press_muscles">Brust, Trizeps, Schultern</string>
+    <string name="seed_bench_press_desc">Auf der Flachbank liegend die Langhantel zur Brust senken und gerade nach oben drücken. Schulterblätter zusammen.</string>
+
+    <string name="seed_deadlift_name">Kreuzheben</string>
+    <string name="seed_deadlift_muscles">Rücken, Beine, Gesäß</string>
+    <string name="seed_deadlift_desc">Langhantel vom Boden mit geradem Rücken und gestreckter Hüfte anheben, bis du aufrecht stehst. Stange nah am Körper führen.</string>
+
+    <string name="seed_barbell_row_name">Langhantel-Rudern</string>
+    <string name="seed_barbell_row_muscles">Rücken, Bizeps</string>
+    <string name="seed_barbell_row_desc">Vorgebeugt mit geradem Rücken die Langhantel zum unteren Brustkorb ziehen, Ellenbogen eng am Körper.</string>
+
+    <string name="seed_ohp_name">Schulterdrücken</string>
+    <string name="seed_ohp_muscles">Schultern, Trizeps</string>
+    <string name="seed_ohp_desc">Aus dem Stand die Langhantel von Schulterhöhe gerade über den Kopf drücken, Rumpf fest. Auch Military / Overhead Press.</string>
+
+    <string name="seed_front_squat_name">Frontkniebeuge</string>
+    <string name="seed_front_squat_muscles">Beine, Rumpf</string>
+    <string name="seed_front_squat_desc">Langhantel auf den vorderen Schultern ablegen, aufrecht in die Hocke gehen und wieder hochdrücken.</string>
+
+    <string name="seed_lunges_name">Langhantel-Ausfallschritte</string>
+    <string name="seed_lunges_muscles">Beine, Gesäß</string>
+    <string name="seed_lunges_desc">Langhantel im Nacken, abwechselnd große Schritte nach vorn und tief absenken, vorderes Knie über dem Fuß.</string>
+
+    <string name="seed_good_mornings_name">Good Mornings</string>
+    <string name="seed_good_mornings_muscles">Beinbeuger, unterer Rücken</string>
+    <string name="seed_good_mornings_desc">Langhantel im Nacken, mit geradem Rücken aus der Hüfte nach vorn beugen und wieder aufrichten.</string>
+
+    <string name="seed_rdl_name">Rumänisches Kreuzheben</string>
+    <string name="seed_rdl_muscles">Beinbeuger, Gesäß, Rücken</string>
+    <string name="seed_rdl_desc">Aus dem Stand mit leicht gebeugten Knien die Stange entlang der Beine absenken, Hüfte nach hinten, dann aufrichten.</string>
+
+    <string name="seed_one_arm_row_name">Kurzhantel-Rudern einarmig</string>
+    <string name="seed_one_arm_row_muscles">Rücken, Bizeps</string>
+    <string name="seed_one_arm_row_desc">Eine Hand und ein Knie auf der Bank, mit der freien Hand die Kurzhantel zur Hüfte ziehen.</string>
+
+    <string name="seed_pullups_name">Klimmzüge</string>
+    <string name="seed_pullups_muscles">Rücken, Bizeps</string>
+    <string name="seed_pullups_desc">An der Stange hängend den Körper hochziehen bis das Kinn über der Stange ist, kontrolliert ablassen.</string>
+</resources>

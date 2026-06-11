@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -26,9 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.chrisotm.barbelltracker.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -54,6 +57,7 @@ fun PlansListScreen(
     onCreatePlan: () -> Unit,
     onOpenExercises: () -> Unit,
     onOpenHistory: () -> Unit,
+    onOpenSettings: () -> Unit,
     viewModel: PlansListViewModel = hiltViewModel()
 ) {
     val plans by viewModel.plans.collectAsStateWithLifecycle()
@@ -61,20 +65,23 @@ fun PlansListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Barbell Tracker") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onOpenExercises) {
-                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Übungen")
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = stringResource(R.string.nav_exercises))
                     }
                     IconButton(onClick = onOpenHistory) {
-                        Icon(Icons.Filled.DateRange, contentDescription = "Verlauf")
+                        Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.nav_history))
+                    }
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.nav_settings))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onCreatePlan) {
-                Icon(Icons.Filled.Add, contentDescription = "Plan erstellen")
+                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.create_plan))
             }
         }
     ) { padding ->
@@ -87,7 +94,7 @@ fun PlansListScreen(
                         modifier = Modifier.padding(8.dp)
                     )
                     Text(
-                        "Noch kein Trainingsplan.\nTippe auf +, um zu starten.",
+                        stringResource(R.string.plans_empty),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge
                     )

@@ -23,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.chrisotm.barbelltracker.R
 import dev.chrisotm.barbelltracker.ui.components.StepperField
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
 
@@ -43,20 +45,20 @@ fun FinishedContent(
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Text(
-            "Workout abgeschlossen!",
+            stringResource(R.string.workout_complete),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
         )
         if (state.progression.isEmpty()) {
             Text(
-                "Keine Sätze protokolliert.",
+                stringResource(R.string.no_sets_logged),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(8.dp)
             )
         } else {
             Text(
-                "Vorschlag für das nächste Mal:",
+                stringResource(R.string.suggestion_next),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
@@ -70,12 +72,12 @@ fun FinishedContent(
                     Column(Modifier.padding(16.dp)) {
                         Text(item.name, style = MaterialTheme.typography.titleMedium)
                         Text(
-                            "Aktuell: ${formatWeight(item.currentWeightKg)}",
+                            stringResource(R.string.current_weight, formatWeight(item.currentWeightKg)),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         val w = weights[item.exerciseId] ?: item.suggestedWeightKg
                         StepperField(
-                            label = "Nächstes Gewicht",
+                            label = stringResource(R.string.next_weight),
                             value = if (w % 1.0 == 0.0) w.toInt().toString() else w.toString(),
                             onValueChange = { txt ->
                                 txt.toDoubleOrNull()?.let {
@@ -100,7 +102,7 @@ fun FinishedContent(
         Button(
             onClick = onApply,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
-        ) { Text("Übernehmen & Fertig") }
+        ) { Text(stringResource(R.string.apply_finish)) }
     }
 }
 
@@ -115,10 +117,10 @@ fun WeightDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Gewicht anpassen") },
+        title = { Text(stringResource(R.string.adjust_weight)) },
         text = {
             StepperField(
-                label = "Gewicht (kg)",
+                label = stringResource(R.string.weight_kg),
                 value = value,
                 onValueChange = { value = it.filter { c -> c.isDigit() || c == '.' } },
                 onDecrement = {
@@ -135,8 +137,8 @@ fun WeightDialog(
             )
         },
         confirmButton = {
-            TextButton(onClick = { value.toDoubleOrNull()?.let(onConfirm) }) { Text("OK") }
+            TextButton(onClick = { value.toDoubleOrNull()?.let(onConfirm) }) { Text(stringResource(R.string.ok)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Abbrechen") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }

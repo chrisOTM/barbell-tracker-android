@@ -1,132 +1,116 @@
 package dev.chrisotm.barbelltracker.data.db
 
+import android.content.Context
+import dev.chrisotm.barbelltracker.R
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 
-/** Predefined barbell exercise library (US-1.1). */
+/**
+ * Predefined barbell exercise library (US-1.1), localized via string resources.
+ * Built from a [Context] so the library is seeded in the app's active language on first launch.
+ */
 object SeedData {
-    val exercises: List<Exercise> = listOf(
-        Exercise(
-            name = "Langhantel-Kniebeuge",
-            muscleGroups = "Beine, Gesäß, Rumpf",
-            description = "Langhantel im Nacken, tief in die Hocke gehen bis die Hüfte unter Kniehöhe ist, " +
-                "Rücken gerade, kontrolliert wieder hochdrücken."
-        ),
-        Exercise(
-            name = "Bankdrücken",
-            muscleGroups = "Brust, Trizeps, Schultern",
-            description = "Auf der Flachbank liegend die Langhantel zur Brust senken und " +
-                "gerade nach oben drücken. Schulterblätter zusammen."
-        ),
-        Exercise(
-            name = "Kreuzheben",
-            muscleGroups = "Rücken, Beine, Gesäß",
-            description = "Langhantel vom Boden mit geradem Rücken und gestreckter Hüfte anheben, " +
-                "bis du aufrecht stehst. Stange nah am Körper führen."
-        ),
-        Exercise(
-            name = "Langhantel-Rudern",
-            muscleGroups = "Rücken, Bizeps",
-            description = "Vorgebeugt mit geradem Rücken die Langhantel zum unteren Brustkorb ziehen, " +
-                "Ellenbogen eng am Körper."
-        ),
-        Exercise(
-            name = "Schulterdrücken",
-            muscleGroups = "Schultern, Trizeps",
-            description = "Aus dem Stand die Langhantel von Schulterhöhe gerade über den Kopf drücken, " +
-                "Rumpf fest. Auch Military / Overhead Press."
-        ),
-        Exercise(
-            name = "Frontkniebeuge",
-            muscleGroups = "Beine, Rumpf",
-            description = "Langhantel auf den vorderen Schultern ablegen, aufrecht in die Hocke gehen " +
-                "und wieder hochdrücken."
-        ),
-        Exercise(
-            name = "Langhantel-Ausfallschritte",
-            muscleGroups = "Beine, Gesäß",
-            description = "Langhantel im Nacken, abwechselnd große Schritte nach vorn und tief absenken, " +
-                "vorderes Knie über dem Fuß."
-        ),
-        Exercise(
-            name = "Good Mornings",
-            muscleGroups = "Beinbeuger, unterer Rücken",
-            description = "Langhantel im Nacken, mit geradem Rücken aus der Hüfte nach vorn beugen " +
-                "und wieder aufrichten."
-        ),
-        Exercise(
-            name = "Rumänisches Kreuzheben",
-            muscleGroups = "Beinbeuger, Gesäß, Rücken",
-            description = "Aus dem Stand mit leicht gebeugten Knien die Stange entlang der Beine absenken, " +
-                "Hüfte nach hinten, dann aufrichten."
-        ),
-        Exercise(
-            name = "Kurzhantel-Rudern einarmig",
-            muscleGroups = "Rücken, Bizeps",
-            description = "Eine Hand und ein Knie auf der Bank, mit der freien Hand die Kurzhantel " +
-                "zur Hüfte ziehen."
-        ),
-        Exercise(
-            name = "Klimmzüge",
-            muscleGroups = "Rücken, Bizeps",
-            description = "An der Stange hängend den Körper hochziehen bis das Kinn über der Stange ist, " +
-                "kontrolliert ablassen.",
-            isBodyweight = true
-        )
+    /** name-res / muscles-res / desc-res / bodyweight for each starter exercise. */
+    private data class SeedExercise(
+        val nameRes: Int,
+        val musclesRes: Int,
+        val descRes: Int,
+        val bodyweight: Boolean = false
     )
+
+    private val defs = listOf(
+        SeedExercise(R.string.seed_back_squat_name, R.string.seed_back_squat_muscles, R.string.seed_back_squat_desc),
+        SeedExercise(R.string.seed_bench_press_name, R.string.seed_bench_press_muscles, R.string.seed_bench_press_desc),
+        SeedExercise(R.string.seed_deadlift_name, R.string.seed_deadlift_muscles, R.string.seed_deadlift_desc),
+        SeedExercise(R.string.seed_barbell_row_name, R.string.seed_barbell_row_muscles, R.string.seed_barbell_row_desc),
+        SeedExercise(R.string.seed_ohp_name, R.string.seed_ohp_muscles, R.string.seed_ohp_desc),
+        SeedExercise(R.string.seed_front_squat_name, R.string.seed_front_squat_muscles, R.string.seed_front_squat_desc),
+        SeedExercise(R.string.seed_lunges_name, R.string.seed_lunges_muscles, R.string.seed_lunges_desc),
+        SeedExercise(R.string.seed_good_mornings_name, R.string.seed_good_mornings_muscles, R.string.seed_good_mornings_desc),
+        SeedExercise(R.string.seed_rdl_name, R.string.seed_rdl_muscles, R.string.seed_rdl_desc),
+        SeedExercise(R.string.seed_one_arm_row_name, R.string.seed_one_arm_row_muscles, R.string.seed_one_arm_row_desc),
+        SeedExercise(R.string.seed_pullups_name, R.string.seed_pullups_muscles, R.string.seed_pullups_desc, bodyweight = true)
+    )
+
+    fun exercises(context: Context): List<Exercise> = defs.map {
+        Exercise(
+            name = context.getString(it.nameRes),
+            muscleGroups = context.getString(it.musclesRes),
+            description = context.getString(it.descRes),
+            isBodyweight = it.bodyweight
+        )
+    }
 }
 
-/** Definition of one exercise slot inside a template workout. */
-data class TemplateEntry(val exerciseName: String, val sets: Int, val reps: Int)
+/** Definition of one exercise slot inside a template workout (exercise referenced by name res). */
+data class TemplateEntry(val exerciseNameRes: Int, val sets: Int, val reps: Int)
 
 /** A workout (day) inside a template. */
 data class TemplateWorkout(val label: String, val entries: List<TemplateEntry>)
 
-/** A ready-to-copy plan template (US-1.3). */
-data class PlanTemplate(val name: String, val workouts: List<TemplateWorkout>)
+/** A ready-to-copy plan template (US-1.3), with all names resolved to the active language. */
+data class PlanTemplate(
+    val name: String,
+    val workouts: List<ResolvedTemplateWorkout>
+)
+
+data class ResolvedTemplateEntry(val exerciseName: String, val sets: Int, val reps: Int)
+data class ResolvedTemplateWorkout(val label: String, val entries: List<ResolvedTemplateEntry>)
 
 object PlanTemplates {
-    val all: List<PlanTemplate> = listOf(
-        PlanTemplate(
-            name = "GK 5×5",
-            workouts = listOf(
-                TemplateWorkout(
-                    "A",
-                    listOf(
-                        TemplateEntry("Langhantel-Kniebeuge", 5, 5),
-                        TemplateEntry("Bankdrücken", 5, 5),
-                        TemplateEntry("Langhantel-Rudern", 5, 5)
-                    )
-                ),
-                TemplateWorkout(
-                    "B",
-                    listOf(
-                        TemplateEntry("Langhantel-Kniebeuge", 5, 5),
-                        TemplateEntry("Schulterdrücken", 5, 5),
-                        TemplateEntry("Kreuzheben", 1, 5)
-                    )
+    private val templates = listOf(
+        R.string.seed_tpl_gk5x5 to listOf(
+            TemplateWorkout(
+                "A",
+                listOf(
+                    TemplateEntry(R.string.seed_back_squat_name, 5, 5),
+                    TemplateEntry(R.string.seed_bench_press_name, 5, 5),
+                    TemplateEntry(R.string.seed_barbell_row_name, 5, 5)
+                )
+            ),
+            TemplateWorkout(
+                "B",
+                listOf(
+                    TemplateEntry(R.string.seed_back_squat_name, 5, 5),
+                    TemplateEntry(R.string.seed_ohp_name, 5, 5),
+                    TemplateEntry(R.string.seed_deadlift_name, 1, 5)
                 )
             )
         ),
-        PlanTemplate(
-            name = "GK 3×8",
-            workouts = listOf(
-                TemplateWorkout(
-                    "A",
-                    listOf(
-                        TemplateEntry("Langhantel-Kniebeuge", 3, 8),
-                        TemplateEntry("Bankdrücken", 3, 8),
-                        TemplateEntry("Langhantel-Rudern", 3, 8)
-                    )
-                ),
-                TemplateWorkout(
-                    "B",
-                    listOf(
-                        TemplateEntry("Langhantel-Kniebeuge", 3, 8),
-                        TemplateEntry("Schulterdrücken", 3, 8),
-                        TemplateEntry("Kreuzheben", 1, 8)
-                    )
+        R.string.seed_tpl_gk3x8 to listOf(
+            TemplateWorkout(
+                "A",
+                listOf(
+                    TemplateEntry(R.string.seed_back_squat_name, 3, 8),
+                    TemplateEntry(R.string.seed_bench_press_name, 3, 8),
+                    TemplateEntry(R.string.seed_barbell_row_name, 3, 8)
+                )
+            ),
+            TemplateWorkout(
+                "B",
+                listOf(
+                    TemplateEntry(R.string.seed_back_squat_name, 3, 8),
+                    TemplateEntry(R.string.seed_ohp_name, 3, 8),
+                    TemplateEntry(R.string.seed_deadlift_name, 1, 8)
                 )
             )
         )
     )
+
+    fun all(context: Context): List<PlanTemplate> = templates.map { (nameRes, workouts) ->
+        PlanTemplate(
+            name = context.getString(nameRes),
+            workouts = workouts.map { w ->
+                ResolvedTemplateWorkout(
+                    label = w.label,
+                    entries = w.entries.map { e ->
+                        ResolvedTemplateEntry(
+                            exerciseName = context.getString(e.exerciseNameRes),
+                            sets = e.sets,
+                            reps = e.reps
+                        )
+                    }
+                )
+            }
+        )
+    }
 }

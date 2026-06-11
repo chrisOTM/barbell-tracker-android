@@ -1,0 +1,44 @@
+# Barbell Tracker
+
+Native Android app for structured barbell training: plans, guided workout execution with
+auto rest-timer, set logging, weight progression, and a training diary. Fully offline — no
+login, cloud, ads, or tracking.
+
+Built from `spec/Barbell-Tracker-requirements.md`.
+
+## Stack
+Kotlin · Jetpack Compose (Material 3) · Navigation-Compose · Room (KSP) · Hilt · MVVM + Repository.
+`minSdk 26`, `compileSdk 36`, `targetSdk 36`.
+
+## Architecture
+```
+ui (Compose screens + ViewModels)
+  → data/repo (interfaces + impls)   ← swappable for a future remote source
+    → data/dao (Room DAOs)
+      → data/db (AppDatabase, seeder)
+domain  (pure logic: RestDefaults, ProgressionCalculator, WorkoutEngine — unit-tested)
+```
+Layers wired with Hilt. No business logic in composables. Library + plan templates seeded on
+first launch.
+
+## Build & run
+The Gradle daemon must run on JDK 17–21 (the system JDK 26 is too new for AGP 8.7.3).
+`org.gradle.java.home` in `gradle.properties` points at the Android Studio JBR.
+
+```bash
+./gradlew :app:assembleDebug      # build APK (offline-capable once deps are cached)
+./gradlew test                    # domain unit tests
+./gradlew :app:installDebug       # install on a running emulator/device
+```
+
+### SDK note (Android 16 / API 36)
+AGP 8.7.3 resolves `compileSdk = 36` to an SDK platform whose hash is `android-36`. This
+machine only ships the minor-versioned `android-36.1` platform, so a non-destructive alias
+directory `platforms/android-36` (symlinks to `android-36.1` + a `package.xml`/`source.properties`
+declaring `api-level 36`) was created in the SDK. Recreate it if the SDK is reinstalled, or
+bump AGP to ≥ 8.9 which understands minor SDK versions.
+
+## Feature → requirement map
+See `spec/Barbell-Tracker-requirements.md`. All MUST and SHOULD user stories are implemented;
+the foreground-service rest timer (optional in the spec) is deferred — the timer runs in-app
+with the screen kept on.

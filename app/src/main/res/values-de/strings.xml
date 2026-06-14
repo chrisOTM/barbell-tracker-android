@@ -15,8 +15,10 @@
     <string name="more">Mehr</string>
 
     <!-- plans list -->
+    <string name="nav_plans">Pläne</string>
     <string name="nav_exercises">Übungen</string>
     <string name="nav_history">Verlauf</string>
+    <string name="nav_statistics">Statistik</string>
     <string name="nav_settings">Einstellungen</string>
     <string name="create_plan">Plan erstellen</string>
     <string name="plans_empty">Noch kein Trainingsplan.\nTippe auf +, um zu starten.</string>
@@ -105,6 +107,9 @@
     <string name="session_title">Trainingseinheit</string>
     <string name="progress">Fortschritt</string>
     <string name="session_set_line">Satz %1$d: %2$d/%3$d Wdh. · %4$s</string>
+    <string name="delete_session">Einheit löschen</string>
+    <string name="delete_session_title">Einheit löschen?</string>
+    <string name="delete_session_msg">Diese Trainingseinheit und alle erfassten Sätze werden entfernt.</string>
 
     <!-- exercise progress -->
     <string name="progress_title">Fortschritt</string>
@@ -112,15 +117,57 @@
     <string name="weight_over_time">Gewicht über Zeit</string>
     <string name="progress_from_to">Von %1$s auf %2$s</string>
 
+    <!-- statistics -->
+    <string name="statistics_title">Statistik</string>
+    <string name="stat_no_data">Noch kein Training erfasst.</string>
+    <string name="stat_overview">Training</string>
+    <string name="stat_exercises_header">Übungen</string>
+    <string name="stat_sessions_total">Einheiten</string>
+    <string name="stat_sessions_7d">Letzte 7 Tage</string>
+    <string name="stat_sessions_30d">Letzte 30 Tage</string>
+    <string name="stat_streak_weeks">Wochen-Serie</string>
+    <string name="stat_total_volume">Gesamtvolumen</string>
+    <string name="stat_total_sets">Sätze gesamt</string>
+    <string name="stat_avg_sets">⌀ Sätze/Einheit</string>
+    <string name="stat_success_rate">Erfolgsquote</string>
+    <string name="stat_top_exercise">Top-Übung</string>
+    <string name="stat_total_time">Trainingszeit</string>
+    <string name="stat_pr">Rekord</string>
+    <string name="stat_e1rm">Gesch. 1RM</string>
+    <string name="stat_progress">Fortschritt</string>
+    <string name="stat_volume">Volumen</string>
+    <string name="stat_exercise_sessions">Einheiten</string>
+    <string name="stat_exercise_row">%1$s · %2$d Einheiten</string>
+
     <!-- settings -->
     <string name="settings_title">Einstellungen</string>
     <string name="language">Sprache</string>
     <string name="language_english">Englisch</string>
     <string name="language_german">Deutsch</string>
+    <string name="language_system">Systemstandard</string>
+    <string name="theme">Design</string>
+    <string name="theme_system">Systemstandard</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
     <string name="about">Über</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_developer">Entwickler: %1$s</string>
     <string name="about_repository">Auf GitHub ansehen</string>
+
+    <!-- data: import/export + backup/restore -->
+    <string name="data_section">Daten</string>
+    <string name="export_workouts">Workouts exportieren</string>
+    <string name="import_workouts">Workouts importieren</string>
+    <string name="backup_history">Verlauf sichern</string>
+    <string name="restore_history">Verlauf wiederherstellen</string>
+    <string name="import_mode_title">Importieren</string>
+    <string name="import_replace_warning">Zusammenführen ergänzt die vorhandenen Daten. Ersetzen löscht die vorhandenen Daten zuerst.</string>
+    <string name="import_merge">Zusammenführen</string>
+    <string name="import_replace">Ersetzen</string>
+    <string name="import_done">%1$d importiert, %2$d übersprungen</string>
+    <string name="export_done">Exportiert</string>
+    <string name="import_error_parse">Datei konnte nicht gelesen werden</string>
+    <string name="import_error_wrong_type">Falscher Dateityp</string>
 
     <!-- plan templates -->
     <string name="seed_tpl_gk5x5">GK 5×5</string>

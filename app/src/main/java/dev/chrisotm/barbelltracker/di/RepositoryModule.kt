@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.chrisotm.barbelltracker.data.repo.BackupRepository
+import dev.chrisotm.barbelltracker.data.repo.BackupRepositoryImpl
 import dev.chrisotm.barbelltracker.data.repo.ExerciseRepository
 import dev.chrisotm.barbelltracker.data.repo.ExerciseRepositoryImpl
 import dev.chrisotm.barbelltracker.data.repo.PlanRepository
@@ -23,4 +25,7 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindSessionRepository(impl: SessionRepositoryImpl): SessionRepository
+
+    @Binds @Singleton
+    abstract fun bindBackupRepository(impl: BackupRepositoryImpl): BackupRepository
 }

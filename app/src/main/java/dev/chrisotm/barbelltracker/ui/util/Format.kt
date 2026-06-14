@@ -18,6 +18,14 @@ fun formatDuration(totalSeconds: Int): String {
     return "%d:%02d".format(m, s)
 }
 
+/** Seconds → "12 h 30 min" / "45 min" for cumulative training time. */
+fun formatHoursMinutes(totalSeconds: Long): String {
+    val totalMin = totalSeconds / 60
+    val h = totalMin / 60
+    val m = totalMin % 60
+    return if (h > 0) "$h h $m min" else "$m min"
+}
+
 // Built per call so they follow the app's active locale (date/time still use the
 // numeric dd.MM.yyyy layout the history search expects).
 fun formatDateTime(epochMillis: Long): String =

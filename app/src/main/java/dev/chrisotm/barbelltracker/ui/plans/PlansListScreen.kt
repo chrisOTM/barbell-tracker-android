@@ -50,64 +50,35 @@ class PlansListViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlansListScreen(
     onOpenPlan: (Long) -> Unit,
-    onCreatePlan: () -> Unit,
-    onOpenExercises: () -> Unit,
-    onOpenHistory: () -> Unit,
-    onOpenSettings: () -> Unit,
     viewModel: PlansListViewModel = hiltViewModel()
 ) {
     val plans by viewModel.plans.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
-                actions = {
-                    IconButton(onClick = onOpenExercises) {
-                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = stringResource(R.string.nav_exercises))
-                    }
-                    IconButton(onClick = onOpenHistory) {
-                        Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.nav_history))
-                    }
-                    IconButton(onClick = onOpenSettings) {
-                        Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.nav_settings))
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onCreatePlan) {
-                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.create_plan))
+    if (plans.isEmpty()) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    Icons.Filled.FitnessCenter,
+                    contentDescription = null,
+                    modifier = Modifier.padding(8.dp)
+                )
+                Text(
+                    stringResource(R.string.plans_empty),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
-    ) { padding ->
-        if (plans.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        Icons.Filled.FitnessCenter,
-                        contentDescription = null,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Text(
-                        stringResource(R.string.plans_empty),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        } else {
-            LazyColumn(
-                Modifier.fillMaxSize().padding(padding),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                items(plans, key = { it.id }) { plan ->
-                    PlanRow(plan) { onOpenPlan(plan.id) }
-                }
+    } else {
+        LazyColumn(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(plans, key = { it.id }) { plan ->
+                PlanRow(plan) { onOpenPlan(plan.id) }
             }
         }
     }

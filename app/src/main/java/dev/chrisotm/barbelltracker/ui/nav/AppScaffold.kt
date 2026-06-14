@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Settings
@@ -48,6 +49,7 @@ fun AppScaffold(
         TopLevel(Routes.PLANS, R.string.app_name, R.string.nav_plans, Icons.AutoMirrored.Filled.List),
         TopLevel(Routes.EXERCISES, R.string.exercises_title, R.string.nav_exercises, Icons.Filled.FitnessCenter),
         TopLevel(Routes.HISTORY, R.string.history_title, R.string.nav_history, Icons.Filled.DateRange),
+        TopLevel(Routes.STATISTICS, R.string.statistics_title, R.string.nav_statistics, Icons.Filled.BarChart),
         TopLevel(Routes.SETTINGS, R.string.settings_title, R.string.nav_settings, Icons.Filled.Settings),
     )
     val backStack by navController.currentBackStackEntryAsState()

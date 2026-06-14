@@ -18,6 +18,7 @@
     <string name="nav_plans">Pläne</string>
     <string name="nav_exercises">Übungen</string>
     <string name="nav_history">Verlauf</string>
+    <string name="nav_statistics">Statistik</string>
     <string name="nav_settings">Einstellungen</string>
     <string name="create_plan">Plan erstellen</string>
     <string name="plans_empty">Noch kein Trainingsplan.\nTippe auf +, um zu starten.</string>
@@ -115,6 +116,28 @@
     <string name="not_enough_data">Noch nicht genug Daten für ein Diagramm.</string>
     <string name="weight_over_time">Gewicht über Zeit</string>
     <string name="progress_from_to">Von %1$s auf %2$s</string>
+
+    <!-- statistics -->
+    <string name="statistics_title">Statistik</string>
+    <string name="stat_no_data">Noch kein Training erfasst.</string>
+    <string name="stat_overview">Training</string>
+    <string name="stat_exercises_header">Übungen</string>
+    <string name="stat_sessions_total">Einheiten</string>
+    <string name="stat_sessions_7d">Letzte 7 Tage</string>
+    <string name="stat_sessions_30d">Letzte 30 Tage</string>
+    <string name="stat_streak_weeks">Wochen-Serie</string>
+    <string name="stat_total_volume">Gesamtvolumen</string>
+    <string name="stat_total_sets">Sätze gesamt</string>
+    <string name="stat_avg_sets">⌀ Sätze/Einheit</string>
+    <string name="stat_success_rate">Erfolgsquote</string>
+    <string name="stat_top_exercise">Top-Übung</string>
+    <string name="stat_total_time">Trainingszeit</string>
+    <string name="stat_pr">Rekord</string>
+    <string name="stat_e1rm">Gesch. 1RM</string>
+    <string name="stat_progress">Fortschritt</string>
+    <string name="stat_volume">Volumen</string>
+    <string name="stat_exercise_sessions">Einheiten</string>
+    <string name="stat_exercise_row">%1$s · %2$d Einheiten</string>
 
     <!-- settings -->
     <string name="settings_title">Einstellungen</string>

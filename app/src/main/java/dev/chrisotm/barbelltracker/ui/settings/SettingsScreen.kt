@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisotm.barbelltracker.BuildConfig
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.ThemePreference
 import dev.chrisotm.barbelltracker.data.repo.ImportMode
 import java.time.LocalDate
 
@@ -51,6 +52,14 @@ private val LANGUAGES = listOf(
     LanguageOption("en", R.string.language_english),
     LanguageOption("de", R.string.language_german),
     LanguageOption(SYSTEM_TAG, R.string.language_system)
+)
+
+private data class ThemeOption(val mode: Int, val labelRes: Int)
+
+private val THEMES = listOf(
+    ThemeOption(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, R.string.theme_system),
+    ThemeOption(AppCompatDelegate.MODE_NIGHT_NO, R.string.theme_light),
+    ThemeOption(AppCompatDelegate.MODE_NIGHT_YES, R.string.theme_dark)
 )
 
 /** Which dataset an in-flight import targets. */
@@ -103,6 +112,10 @@ fun SettingsScreen() {
 
             HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
+            ThemeSection()
+
+            HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
             DataSection(snackbarHostState)
 
             HorizontalDivider(Modifier.padding(vertical = 20.dp))
@@ -114,6 +127,35 @@ fun SettingsScreen() {
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+    }
+}
+
+@Composable
+private fun ThemeSection() {
+    val context = LocalContext.current
+    val currentMode = AppCompatDelegate.getDefaultNightMode()
+
+    Text(stringResource(R.string.theme), style = MaterialTheme.typography.titleMedium)
+    THEMES.forEach { theme ->
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .selectable(
+                    selected = currentMode == theme.mode,
+                    onClick = {
+                        if (currentMode != theme.mode) ThemePreference.set(context, theme.mode)
+                    }
+                )
+                .padding(vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(selected = currentMode == theme.mode, onClick = null)
+            Text(
+                stringResource(theme.labelRes),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(start = 12.dp)
+            )
+        }
     }
 }
 

@@ -122,6 +122,10 @@
     <string name="language_english">English</string>
     <string name="language_german">German</string>
     <string name="language_system">System default</string>
+    <string name="theme">Theme</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="about">About</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_developer">Developer: %1$s</string>

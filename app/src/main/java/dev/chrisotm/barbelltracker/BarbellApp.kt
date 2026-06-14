@@ -11,6 +11,7 @@ class BarbellApp : Application() {
     override fun onCreate() {
         super.onCreate()
         forceEnglishOnFirstLaunch()
+        ThemePreference.apply(this)
     }
 
     /**

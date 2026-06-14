@@ -134,6 +134,10 @@ interface SessionDao {
     @Update
     suspend fun updateSession(session: WorkoutSession)
 
+    /** Deletes one session; cascades to its session_sets. */
+    @Delete
+    suspend fun deleteSession(session: WorkoutSession)
+
     @Insert
     suspend fun insertSet(set: SessionSet): Long
 

@@ -106,6 +106,9 @@
     <string name="session_title">Training session</string>
     <string name="progress">Progress</string>
     <string name="session_set_line">Set %1$d: %2$d/%3$d reps · %4$s</string>
+    <string name="delete_session">Delete session</string>
+    <string name="delete_session_title">Delete session?</string>
+    <string name="delete_session_msg">This training session and all its logged sets will be removed.</string>
 
     <!-- exercise progress -->
     <string name="progress_title">Progress</string>

@@ -106,6 +106,9 @@
     <string name="session_title">Trainingseinheit</string>
     <string name="progress">Fortschritt</string>
     <string name="session_set_line">Satz %1$d: %2$d/%3$d Wdh. · %4$s</string>
+    <string name="delete_session">Einheit löschen</string>
+    <string name="delete_session_title">Einheit löschen?</string>
+    <string name="delete_session_msg">Diese Trainingseinheit und alle erfassten Sätze werden entfernt.</string>
 
     <!-- exercise progress -->
     <string name="progress_title">Fortschritt</string>

@@ -35,6 +35,9 @@ interface ExerciseDao {
     @Insert
     suspend fun insertAll(exercises: List<Exercise>)
 
+    @Query("SELECT * FROM exercises")
+    suspend fun getAll(): List<Exercise>
+
     @Update
     suspend fun update(exercise: Exercise)
 
@@ -60,6 +63,14 @@ interface PlanDao {
     @Transaction
     @Query("SELECT * FROM plans WHERE id = :id")
     suspend fun getPlanWithWorkouts(id: Long): PlanWithWorkouts?
+
+    @Transaction
+    @Query("SELECT * FROM plans ORDER BY name COLLATE NOCASE ASC")
+    suspend fun getAllPlansWithWorkouts(): List<PlanWithWorkouts>
+
+    /** Wipes all plans; cascades to workouts + workout_exercises. */
+    @Query("DELETE FROM plans")
+    suspend fun deleteAllPlans()
 
     @Insert
     suspend fun insert(plan: Plan): Long
@@ -132,6 +143,14 @@ interface SessionDao {
     @Transaction
     @Query("SELECT * FROM sessions ORDER BY startedAt DESC")
     fun observeSessionsWithSets(): Flow<List<SessionWithSets>>
+
+    @Transaction
+    @Query("SELECT * FROM sessions ORDER BY startedAt ASC")
+    suspend fun getAllSessionsWithSets(): List<SessionWithSets>
+
+    /** Wipes all sessions; cascades to session_sets. */
+    @Query("DELETE FROM sessions")
+    suspend fun deleteAllSessions()
 
     @Transaction
     @Query("SELECT * FROM sessions WHERE id = :id")

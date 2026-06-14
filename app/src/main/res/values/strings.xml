@@ -124,6 +124,21 @@
     <string name="about_developer">Developer: %1$s</string>
     <string name="about_repository">View on GitHub</string>
 
+    <!-- data: import/export + backup/restore -->
+    <string name="data_section">Data</string>
+    <string name="export_workouts">Export workouts</string>
+    <string name="import_workouts">Import workouts</string>
+    <string name="backup_history">Backup history</string>
+    <string name="restore_history">Restore history</string>
+    <string name="import_mode_title">Import</string>
+    <string name="import_replace_warning">Merge adds to your existing data. Replace deletes the existing data first.</string>
+    <string name="import_merge">Merge</string>
+    <string name="import_replace">Replace</string>
+    <string name="import_done">%1$d imported, %2$d skipped</string>
+    <string name="export_done">Exported</string>
+    <string name="import_error_parse">Could not read file</string>
+    <string name="import_error_wrong_type">Wrong file type</string>
+
     <!-- plan templates -->
     <string name="seed_tpl_gk5x5">FB 5×5</string>
     <string name="seed_tpl_gk3x8">FB 3×8</string>

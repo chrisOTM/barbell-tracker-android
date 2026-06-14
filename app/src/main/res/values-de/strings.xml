@@ -124,6 +124,21 @@
     <string name="about_developer">Entwickler: %1$s</string>
     <string name="about_repository">Auf GitHub ansehen</string>
 
+    <!-- data: import/export + backup/restore -->
+    <string name="data_section">Daten</string>
+    <string name="export_workouts">Workouts exportieren</string>
+    <string name="import_workouts">Workouts importieren</string>
+    <string name="backup_history">Verlauf sichern</string>
+    <string name="restore_history">Verlauf wiederherstellen</string>
+    <string name="import_mode_title">Importieren</string>
+    <string name="import_replace_warning">Zusammenführen ergänzt die vorhandenen Daten. Ersetzen löscht die vorhandenen Daten zuerst.</string>
+    <string name="import_merge">Zusammenführen</string>
+    <string name="import_replace">Ersetzen</string>
+    <string name="import_done">%1$d importiert, %2$d übersprungen</string>
+    <string name="export_done">Exportiert</string>
+    <string name="import_error_parse">Datei konnte nicht gelesen werden</string>
+    <string name="import_error_wrong_type">Falscher Dateityp</string>
+
     <!-- plan templates -->
     <string name="seed_tpl_gk5x5">GK 5×5</string>
     <string name="seed_tpl_gk3x8">GK 3×8</string>

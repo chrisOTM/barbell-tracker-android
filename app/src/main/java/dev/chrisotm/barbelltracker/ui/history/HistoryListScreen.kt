@@ -75,25 +75,12 @@ class HistoryViewModel @Inject constructor(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryListScreen(
-    onBack: () -> Unit,
     onOpenSession: (Long) -> Unit,
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val ui by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.history_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
+    Column(Modifier.fillMaxSize()) {
             OutlinedTextField(
                 value = ui.dateQuery,
                 onValueChange = { viewModel.dateQuery.value = it },
@@ -132,7 +119,6 @@ fun HistoryListScreen(
             }
         }
     }
-}
 
 @Composable
 private fun SessionRow(item: SessionWithSets, onClick: () -> Unit) {

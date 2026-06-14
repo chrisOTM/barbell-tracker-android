@@ -22,26 +22,21 @@ import dev.chrisotm.barbelltracker.ui.workout.WorkoutOverviewScreen
 fun AppNavHost() {
     val nav = rememberNavController()
 
-    NavHost(navController = nav, startDestination = Routes.PLANS) {
+    AppScaffold(nav) { mod ->
+        NavHost(navController = nav, startDestination = Routes.PLANS, modifier = mod) {
 
         composable(Routes.PLANS) {
             PlansListScreen(
-                onOpenPlan = { nav.navigate(Routes.planEdit(it)) },
-                onCreatePlan = { nav.navigate(Routes.PLAN_CREATE) },
-                onOpenExercises = { nav.navigate(Routes.EXERCISES) },
-                onOpenHistory = { nav.navigate(Routes.HISTORY) },
-                onOpenSettings = { nav.navigate(Routes.SETTINGS) }
+                onOpenPlan = { nav.navigate(Routes.planEdit(it)) }
             )
         }
 
         composable(Routes.SETTINGS) {
-            SettingsScreen(onBack = { nav.popBackStack() })
+            SettingsScreen()
         }
 
         composable(Routes.EXERCISES) {
             ExerciseLibraryScreen(
-                onBack = { nav.popBackStack() },
-                onAdd = { nav.navigate(Routes.exerciseEdit(0)) },
                 onOpen = { nav.navigate(Routes.exerciseEdit(it)) }
             )
         }
@@ -105,7 +100,6 @@ fun AppNavHost() {
 
         composable(Routes.HISTORY) {
             HistoryListScreen(
-                onBack = { nav.popBackStack() },
                 onOpenSession = { nav.navigate(Routes.sessionDetail(it)) }
             )
         }
@@ -125,6 +119,7 @@ fun AppNavHost() {
             arguments = listOf(navArgument("exerciseId") { type = NavType.LongType })
         ) {
             ExerciseProgressScreen(onBack = { nav.popBackStack() })
+        }
         }
     }
 }

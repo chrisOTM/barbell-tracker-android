@@ -66,44 +66,24 @@ class ExerciseLibraryViewModel @Inject constructor(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseLibraryScreen(
-    onBack: () -> Unit,
-    onAdd: () -> Unit,
     onOpen: (Long) -> Unit,
     viewModel: ExerciseLibraryViewModel = hiltViewModel()
 ) {
     val items by viewModel.exercises.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.exercises_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAdd) {
-                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_exercise))
-            }
-        }
-    ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = { viewModel.query.value = it },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                placeholder = { Text(stringResource(R.string.search)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
-            )
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(items, key = { it.id }) { ex ->
-                    ExerciseRow(ex) { onOpen(ex.id) }
-                }
+    Column(Modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = { viewModel.query.value = it },
+            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+            placeholder = { Text(stringResource(R.string.search)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
+        LazyColumn(Modifier.fillMaxSize()) {
+            items(items, key = { it.id }) { ex ->
+                ExerciseRow(ex) { onOpen(ex.id) }
             }
         }
     }

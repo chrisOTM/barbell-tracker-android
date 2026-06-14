@@ -10,17 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,62 +26,54 @@ import dev.chrisotm.barbelltracker.R
 
 private data class LanguageOption(val tag: String, val labelRes: Int)
 
+private const val SYSTEM_TAG = "system"
+
 private val LANGUAGES = listOf(
     LanguageOption("en", R.string.language_english),
-    LanguageOption("de", R.string.language_german)
+    LanguageOption("de", R.string.language_german),
+    LanguageOption(SYSTEM_TAG, R.string.language_system)
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
-    // Current app language tag (e.g. "en" / "de"); falls back to English.
-    val currentTag = AppCompatDelegate.getApplicationLocales()
-        .toLanguageTags().substringBefore('-').ifBlank { "en" }
+fun SettingsScreen() {
+    // Current app language: empty locale list = follow system, else the chosen tag.
+    val locales = AppCompatDelegate.getApplicationLocales()
+    val currentTag =
+        if (locales.isEmpty) SYSTEM_TAG
+        else locales.toLanguageTags().substringBefore('-').ifBlank { SYSTEM_TAG }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).padding(16.dp)) {
-            Text(stringResource(R.string.language), style = MaterialTheme.typography.titleMedium)
-            LANGUAGES.forEach { lang ->
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .selectable(
-                            selected = currentTag == lang.tag,
-                            onClick = {
-                                if (currentTag != lang.tag) {
-                                    AppCompatDelegate.setApplicationLocales(
-                                        LocaleListCompat.forLanguageTags(lang.tag)
-                                    )
-                                }
+    Column(Modifier.fillMaxSize().padding(16.dp)) {
+        Text(stringResource(R.string.language), style = MaterialTheme.typography.titleMedium)
+        LANGUAGES.forEach { lang ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .selectable(
+                        selected = currentTag == lang.tag,
+                        onClick = {
+                            if (currentTag != lang.tag) {
+                                AppCompatDelegate.setApplicationLocales(
+                                    if (lang.tag == SYSTEM_TAG) LocaleListCompat.getEmptyLocaleList()
+                                    else LocaleListCompat.forLanguageTags(lang.tag)
+                                )
                             }
-                        )
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(selected = currentTag == lang.tag, onClick = null)
-                    Text(
-                        stringResource(lang.labelRes),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 12.dp)
+                        }
                     )
-                }
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(selected = currentTag == lang.tag, onClick = null)
+                Text(
+                    stringResource(lang.labelRes),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 12.dp)
+                )
             }
-
-            HorizontalDivider(Modifier.padding(vertical = 20.dp))
-
-            AboutSection()
         }
+
+        HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
+        AboutSection()
     }
 }
 
@@ -104,7 +89,7 @@ private fun AboutSection() {
         style = MaterialTheme.typography.bodyLarge
     )
     Text(
-        stringResource(R.string.about_developer, "ChrisOTM"),
+        stringResource(R.string.about_developer, "chrisOTM"),
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 4.dp)
     )

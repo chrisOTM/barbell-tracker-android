@@ -29,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import dev.chrisotm.barbelltracker.R
 import dev.chrisotm.barbelltracker.ui.components.StepperField
 import dev.chrisotm.barbelltracker.ui.util.formatWeight
+import dev.chrisotm.barbelltracker.ui.util.formatWeightPlain
+import dev.chrisotm.barbelltracker.ui.util.parseWeight
+import dev.chrisotm.barbelltracker.ui.util.sanitizeWeightInput
 
 @Composable
 fun FinishedContent(
@@ -36,10 +39,11 @@ fun FinishedContent(
     onChoice: (Long, Double) -> Unit,
     onApply: () -> Unit
 ) {
-    // Local editable copy of the suggested next-session weights.
-    val weights = remember {
-        mutableStateMapOf<Long, Double>().apply {
-            state.progression.forEach { put(it.exerciseId, it.suggestedWeightKg) }
+    // Raw field text per slot, so partial input like "62." or an emptied field stays editable;
+    // every parseable value is reported to the ViewModel as the current choice.
+    val texts = remember {
+        mutableStateMapOf<Long, String>().apply {
+            state.progression.forEach { put(it.workoutExerciseId, formatWeightPlain(it.suggestedWeightKg)) }
         }
     }
 
@@ -67,7 +71,7 @@ fun FinishedContent(
             Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(state.progression, key = { it.exerciseId }) { item ->
+            items(state.progression, key = { it.workoutExerciseId }) { item ->
                 Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(16.dp)) {
                         Text(item.name, style = MaterialTheme.typography.titleMedium)
@@ -75,23 +79,22 @@ fun FinishedContent(
                             stringResource(R.string.current_weight, formatWeight(item.currentWeightKg)),
                             style = MaterialTheme.typography.bodyMedium
                         )
-                        val w = weights[item.exerciseId] ?: item.suggestedWeightKg
+                        val slot = item.workoutExerciseId
+                        val text = texts[slot] ?: formatWeightPlain(item.suggestedWeightKg)
+                        val w = parseWeight(text) ?: item.suggestedWeightKg
+                        fun choose(nv: Double) {
+                            texts[slot] = formatWeightPlain(nv); onChoice(slot, nv)
+                        }
                         StepperField(
                             label = stringResource(R.string.next_weight),
-                            value = if (w % 1.0 == 0.0) w.toInt().toString() else w.toString(),
-                            onValueChange = { txt ->
-                                txt.toDoubleOrNull()?.let {
-                                    weights[item.exerciseId] = it; onChoice(item.exerciseId, it)
-                                }
+                            value = text,
+                            onValueChange = { raw ->
+                                val clean = sanitizeWeightInput(raw)
+                                texts[slot] = clean
+                                parseWeight(clean)?.let { onChoice(slot, it) }
                             },
-                            onDecrement = {
-                                val nv = (w - 2.5).coerceAtLeast(0.0)
-                                weights[item.exerciseId] = nv; onChoice(item.exerciseId, nv)
-                            },
-                            onIncrement = {
-                                val nv = w + 2.5
-                                weights[item.exerciseId] = nv; onChoice(item.exerciseId, nv)
-                            },
+                            onDecrement = { choose((w - 2.5).coerceAtLeast(0.0)) },
+                            onIncrement = { choose(w + 2.5) },
                             decimal = true,
                             modifier = Modifier.padding(top = 8.dp)
                         )
@@ -112,9 +115,7 @@ fun WeightDialog(
     onConfirm: (Double) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var value by remember {
-        mutableStateOf(if (initial % 1.0 == 0.0) initial.toInt().toString() else initial.toString())
-    }
+    var value by remember { mutableStateOf(formatWeightPlain(initial)) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.adjust_weight)) },
@@ -122,22 +123,14 @@ fun WeightDialog(
             StepperField(
                 label = stringResource(R.string.weight_kg),
                 value = value,
-                onValueChange = { value = it.filter { c -> c.isDigit() || c == '.' } },
-                onDecrement = {
-                    value = ((value.toDoubleOrNull() ?: 0.0) - 2.5).coerceAtLeast(0.0).let {
-                        if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
-                    }
-                },
-                onIncrement = {
-                    value = ((value.toDoubleOrNull() ?: 0.0) + 2.5).let {
-                        if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
-                    }
-                },
+                onValueChange = { value = sanitizeWeightInput(it) },
+                onDecrement = { value = formatWeightPlain(((parseWeight(value) ?: 0.0) - 2.5).coerceAtLeast(0.0)) },
+                onIncrement = { value = formatWeightPlain((parseWeight(value) ?: 0.0) + 2.5) },
                 decimal = true
             )
         },
         confirmButton = {
-            TextButton(onClick = { value.toDoubleOrNull()?.let(onConfirm) }) { Text(stringResource(R.string.ok)) }
+            TextButton(onClick = { parseWeight(value)?.let(onConfirm) }) { Text(stringResource(R.string.ok)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )

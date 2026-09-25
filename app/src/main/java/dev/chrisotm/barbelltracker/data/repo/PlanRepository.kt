@@ -1,15 +1,19 @@
 package dev.chrisotm.barbelltracker.data.repo
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.chrisotm.barbelltracker.data.dao.ExerciseDao
 import dev.chrisotm.barbelltracker.data.dao.PlanDao
 import dev.chrisotm.barbelltracker.data.dao.WorkoutDao
 import dev.chrisotm.barbelltracker.data.dao.WorkoutExerciseDao
 import dev.chrisotm.barbelltracker.data.db.PlanTemplate
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Plan
 import dev.chrisotm.barbelltracker.data.entity.PlanWithWorkouts
 import dev.chrisotm.barbelltracker.data.entity.Workout
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutWithExercises
+import dev.chrisotm.barbelltracker.domain.ExerciseNameIndex
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -37,6 +41,7 @@ interface PlanRepository {
 }
 
 class PlanRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val planDao: PlanDao,
     private val workoutDao: WorkoutDao,
     private val workoutExerciseDao: WorkoutExerciseDao,
@@ -60,16 +65,19 @@ class PlanRepositoryImpl @Inject constructor(
     override suspend fun deletePlan(plan: Plan) = planDao.delete(plan)
 
     override suspend fun createFromTemplate(template: PlanTemplate): Long {
+        // Template names are in the current UI language, the library may be seeded in another.
+        val library = ExerciseNameIndex(SeedCatalog.seedKeyByName(context))
+        exerciseDao.getAll().forEach { library.add(it.id, it.name) }
         val planId = planDao.insert(Plan(name = template.name))
         template.workouts.forEachIndexed { wIndex, tw ->
             val workoutId = workoutDao.insert(
                 Workout(planId = planId, label = tw.label, position = wIndex)
             )
             val configs = tw.entries.mapIndexedNotNull { eIndex, entry ->
-                val exercise = exerciseDao.getByName(entry.exerciseName) ?: return@mapIndexedNotNull null
+                val exerciseId = library.resolve(entry.exerciseName) ?: return@mapIndexedNotNull null
                 WorkoutExercise(
                     workoutId = workoutId,
-                    exerciseId = exercise.id,
+                    exerciseId = exerciseId,
                     position = eIndex,
                     sets = entry.sets,
                     reps = entry.reps

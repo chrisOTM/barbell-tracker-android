@@ -24,7 +24,7 @@ import javax.inject.Inject
 enum class Phase { LOADING, RUNNING, RESTING, CONFIRM_NEXT, FINISHED }
 
 data class ProgressionItem(
-    val exerciseId: Long,
+    val workoutExerciseId: Long,
     val name: String,
     val currentWeightKg: Double,
     val suggestedWeightKg: Double
@@ -69,7 +69,8 @@ class ActiveWorkoutViewModel @Inject constructor(
     private var sessionPlanName: String = ""
     private var sessionWorkoutName: String = ""
     private var sessionStartedAt: Long = System.currentTimeMillis()
-    private val configByExercise = mutableMapOf<Long, WorkoutExercise>()
+    // Both keyed by workoutExerciseId — one exercise may fill several slots of a workout.
+    private val configBySlot = mutableMapOf<Long, WorkoutExercise>()
     private val progressionChoices = mutableMapOf<Long, Double>()
     private var timerJob: Job? = null
 
@@ -81,7 +82,7 @@ class ActiveWorkoutViewModel @Inject constructor(
         val workout = planRepository.getWorkout(workoutId) ?: return
         val actives = workout.exercises.map { item ->
             val c = item.config
-            configByExercise[item.exercise.id] = c
+            configBySlot[c.id] = c
             val startWeight = c.targetWeightKg
                 ?: sessionRepository.lastWeightFor(item.exercise.id)
                 ?: 0.0
@@ -231,12 +232,12 @@ class ActiveWorkoutViewModel @Inject constructor(
     private fun finish() {
         viewModelScope.launch {
             val results = engine.progressionResults()
-            results.forEach { progressionChoices[it.exerciseId] = it.suggestedNextWeightKg }
+            results.forEach { progressionChoices[it.workoutExerciseId] = it.suggestedNextWeightKg }
             endSession()
             _state.value = _state.value.copy(
                 phase = Phase.FINISHED,
                 progression = results.map {
-                    ProgressionItem(it.exerciseId, it.name, it.weightKg, it.suggestedNextWeightKg)
+                    ProgressionItem(it.workoutExerciseId, it.name, it.weightKg, it.suggestedNextWeightKg)
                 }
             )
         }
@@ -256,15 +257,15 @@ class ActiveWorkoutViewModel @Inject constructor(
         )
     }
 
-    fun setProgressionChoice(exerciseId: Long, weightKg: Double) {
-        progressionChoices[exerciseId] = weightKg
+    fun setProgressionChoice(workoutExerciseId: Long, weightKg: Double) {
+        progressionChoices[workoutExerciseId] = weightKg
     }
 
     /** Write the chosen next-session weights back into the plan (US-3.2). */
     fun applyProgression(onDone: () -> Unit) {
         viewModelScope.launch {
-            progressionChoices.forEach { (exerciseId, weight) ->
-                configByExercise[exerciseId]?.let { config ->
+            progressionChoices.forEach { (workoutExerciseId, weight) ->
+                configBySlot[workoutExerciseId]?.let { config ->
                     planRepository.updateExercise(config.copy(targetWeightKg = weight))
                 }
             }

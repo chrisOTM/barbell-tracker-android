@@ -1,12 +1,15 @@
 package dev.chrisotm.barbelltracker.data.repo
 
+import android.content.Context
 import androidx.room.withTransaction
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.chrisotm.barbelltracker.data.dao.ExerciseDao
 import dev.chrisotm.barbelltracker.data.dao.PlanDao
 import dev.chrisotm.barbelltracker.data.dao.SessionDao
 import dev.chrisotm.barbelltracker.data.dao.WorkoutDao
 import dev.chrisotm.barbelltracker.data.dao.WorkoutExerciseDao
 import dev.chrisotm.barbelltracker.data.db.AppDatabase
+import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.entity.Plan
 import dev.chrisotm.barbelltracker.data.entity.SessionSet
@@ -21,6 +24,7 @@ import dev.chrisotm.barbelltracker.data.io.BackupWorkout
 import dev.chrisotm.barbelltracker.data.io.BackupWorkoutExercise
 import dev.chrisotm.barbelltracker.data.io.HistoryBackup
 import dev.chrisotm.barbelltracker.data.io.WorkoutsBackup
+import dev.chrisotm.barbelltracker.domain.ExerciseNameIndex
 import java.time.Instant
 import javax.inject.Inject
 
@@ -37,6 +41,7 @@ interface BackupRepository {
 }
 
 class BackupRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val db: AppDatabase,
     private val exerciseDao: ExerciseDao,
     private val planDao: PlanDao,
@@ -100,12 +105,11 @@ class BackupRepositoryImpl @Inject constructor(
         db.withTransaction {
             if (mode == ImportMode.REPLACE) planDao.deleteAllPlans()
 
-            // Resolve / create exercises, build name -> id map (case-insensitive).
-            val byName = HashMap<String, Long>()
-            exerciseDao.getAll().forEach { byName[it.name.trim().lowercase()] = it.id }
+            // Resolve / create exercises. Built-ins match across languages, so a backup made
+            // in German doesn't duplicate an English-seeded library as custom exercises.
+            val library = libraryIndex()
             for (be in backup.exercises) {
-                val key = be.name.trim().lowercase()
-                if (key.isEmpty() || byName.containsKey(key)) continue
+                if (be.name.isBlank() || library.resolve(be.name) != null) continue
                 val id = exerciseDao.insert(
                     Exercise(
                         name = be.name,
@@ -115,7 +119,7 @@ class BackupRepositoryImpl @Inject constructor(
                         isBodyweight = be.isBodyweight
                     )
                 )
-                byName[key] = id
+                library.add(id, be.name)
             }
 
             var imported = 0
@@ -128,7 +132,7 @@ class BackupRepositoryImpl @Inject constructor(
                         Workout(planId = planId, label = bw.label, position = bw.position)
                     )
                     val items = bw.exercises.mapNotNull { bwe ->
-                        val exId = byName[bwe.exerciseName.trim().lowercase()]
+                        val exId = library.resolve(bwe.exerciseName)
                         if (exId == null) { skipped++; null }
                         else WorkoutExercise(
                             workoutId = workoutId,
@@ -150,9 +154,9 @@ class BackupRepositoryImpl @Inject constructor(
         db.withTransaction {
             if (mode == ImportMode.REPLACE) sessionDao.deleteAllSessions()
 
-            // exercise name -> id for progress linking (denormalized names are authoritative).
-            val byName = HashMap<String, Long>()
-            exerciseDao.getAll().forEach { byName[it.name.trim().lowercase()] = it.id }
+            // Exercise name -> id for progress linking (denormalized names are authoritative).
+            // Logged names are in the UI language of the day, so match built-ins across languages.
+            val library = libraryIndex()
 
             var imported = 0
             for (bs in backup.sessions) {
@@ -171,7 +175,7 @@ class BackupRepositoryImpl @Inject constructor(
                     sessionDao.insertSet(
                         SessionSet(
                             sessionId = sessionId,
-                            exerciseId = byName[s.exerciseName.trim().lowercase()] ?: 0L,
+                            exerciseId = library.resolve(s.exerciseName) ?: 0L,
                             exerciseName = s.exerciseName,
                             setIndex = s.setIndex,
                             plannedReps = s.plannedReps,
@@ -184,6 +188,11 @@ class BackupRepositoryImpl @Inject constructor(
                 }
             }
             ImportResult(imported, 0)
+        }
+
+    private suspend fun libraryIndex(): ExerciseNameIndex =
+        ExerciseNameIndex(SeedCatalog.seedKeyByName(context)).apply {
+            exerciseDao.getAll().forEach { add(it.id, it.name) }
         }
 
     private fun now(): String = Instant.now().toString()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import dev.chrisotm.barbelltracker.R
+import dev.chrisotm.barbelltracker.domain.ExerciseNameIndex
 import java.util.Locale
 
 /**
@@ -44,14 +45,15 @@ object SeedCatalog {
     @Volatile
     private var nameToKey: Map<String, String>? = null
 
-    /** stored exercise name (any supported language, case-insensitive) → seed key. */
-    private fun nameToKey(context: Context): Map<String, String> {
+    /** Stored exercise name (any supported language, normalized via
+     *  [ExerciseNameIndex.normalize]) → seed key. */
+    fun seedKeyByName(context: Context): Map<String, String> {
         nameToKey?.let { return it }
         val map = HashMap<String, String>()
         for (lang in SUPPORTED) {
             val ctx = localizedContext(context, Locale.forLanguageTag(lang))
             for ((key, e) in entries) {
-                map[ctx.getString(e.nameRes).trim().lowercase()] = key
+                map[ExerciseNameIndex.normalize(ctx.getString(e.nameRes))] = key
             }
         }
         nameToKey = map
@@ -72,7 +74,7 @@ object SeedCatalog {
     }
 
     private fun keyFor(context: Context, storedName: String): String? =
-        nameToKey(context)[storedName.trim().lowercase()]
+        seedKeyByName(context)[ExerciseNameIndex.normalize(storedName)]
 
     fun localizedName(context: Context, storedName: String): String {
         val key = keyFor(context, storedName) ?: return storedName

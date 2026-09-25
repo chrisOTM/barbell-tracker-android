@@ -21,8 +21,10 @@ data class ActiveExercise(
     val sets: MutableList<ActiveSet>
 )
 
-/** Result of one exercise once the workout ends — drives progression (US-3.2). */
+/** Result of one exercise slot once the workout ends — drives progression (US-3.2).
+ *  Keyed by [workoutExerciseId]: the same exercise may appear twice in one workout. */
 data class ExerciseProgression(
+    val workoutExerciseId: Long,
     val exerciseId: Long,
     val name: String,
     val weightKg: Double,
@@ -94,6 +96,7 @@ class WorkoutEngine(val exercises: List<ActiveExercise>) {
         val logged = ex.sets.filter { it.logged }
         if (logged.isEmpty()) null
         else ExerciseProgression(
+            workoutExerciseId = ex.workoutExerciseId,
             exerciseId = ex.exerciseId,
             name = ex.name,
             weightKg = ex.weightKg,

@@ -11,6 +11,27 @@ fun formatWeight(kg: Double): String =
 fun formatWeightPlain(kg: Double): String =
     if (kg % 1.0 == 0.0) "${kg.toInt()}" else kg.toString()
 
+/** Filter for weight text fields: keeps digits and the first decimal separator. German
+ *  keyboards send ',' — it is accepted and normalized to '.' instead of being dropped
+ *  (which turned "62,5" into "625"). */
+fun sanitizeWeightInput(text: String): String {
+    val out = StringBuilder()
+    var hasSeparator = false
+    for (c in text) {
+        when {
+            c.isDigit() -> out.append(c)
+            (c == '.' || c == ',') && !hasSeparator -> {
+                out.append('.')
+                hasSeparator = true
+            }
+        }
+    }
+    return out.toString()
+}
+
+/** Parses a weight typed with either decimal separator; null for empty/incomplete input. */
+fun parseWeight(text: String): Double? = text.replace(',', '.').toDoubleOrNull()
+
 /** Seconds → m:ss. */
 fun formatDuration(totalSeconds: Int): String {
     val m = totalSeconds / 60

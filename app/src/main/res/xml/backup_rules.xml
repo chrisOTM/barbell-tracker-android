@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup on Android 11 and lower. Whole database dir so the Room WAL/SHM files
+     travel with barbell_tracker.db; barbell_prefs holds theme + first-launch locale flag. -->
 <full-backup-content>
-    <include domain="database" path="isotimer.db" />
-    <include domain="file" path="datastore/" />
+    <include domain="database" path="." />
+    <include domain="sharedpref" path="barbell_prefs.xml" />
 </full-backup-content>

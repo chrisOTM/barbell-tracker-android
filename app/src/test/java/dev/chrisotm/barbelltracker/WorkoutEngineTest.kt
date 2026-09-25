@@ -10,9 +10,15 @@ import org.junit.Test
 
 class WorkoutEngineTest {
 
-    private fun exercise(id: Long, sets: Int, reps: Int, weight: Double) = ActiveExercise(
+    private fun exercise(
+        id: Long,
+        sets: Int,
+        reps: Int,
+        weight: Double,
+        exerciseId: Long = id
+    ) = ActiveExercise(
         workoutExerciseId = id,
-        exerciseId = id,
+        exerciseId = exerciseId,
         name = "Ex$id",
         plannedReps = reps,
         restSeconds = 180,
@@ -52,5 +58,20 @@ class WorkoutEngineTest {
         engine.setWeightForCurrentExercise(65.0)
         engine.recordCurrentSet(true, 5)
         assertEquals(65.0, engine.loggedSets().first().weightKg, 0.0)
+    }
+
+    @Test fun sameExerciseTwiceYieldsSeparateProgressionPerSlot() {
+        // e.g. light back-off squats after the heavy squats — same library exercise.
+        val engine = WorkoutEngine(
+            listOf(exercise(1, 1, 5, 100.0, exerciseId = 42), exercise(2, 1, 8, 70.0, exerciseId = 42))
+        )
+        engine.recordCurrentSet(true, 5)
+        engine.advance()
+        engine.recordCurrentSet(false, 6)
+
+        val results = engine.progressionResults()
+        assertEquals(listOf(1L, 2L), results.map { it.workoutExerciseId })
+        assertEquals(102.5, results[0].suggestedNextWeightKg, 0.0)
+        assertEquals(70.0, results[1].suggestedNextWeightKg, 0.0)
     }
 }

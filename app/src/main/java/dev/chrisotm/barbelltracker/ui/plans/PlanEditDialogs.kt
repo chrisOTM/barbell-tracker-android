@@ -27,6 +27,9 @@ import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
 import dev.chrisotm.barbelltracker.domain.RestDefaults
 import dev.chrisotm.barbelltracker.ui.components.StepperField
+import dev.chrisotm.barbelltracker.ui.util.formatWeightPlain
+import dev.chrisotm.barbelltracker.ui.util.parseWeight
+import dev.chrisotm.barbelltracker.ui.util.sanitizeWeightInput
 
 @Composable
 fun RenameDialog(
@@ -95,7 +98,7 @@ fun ExerciseConfigDialog(
 ) {
     var sets by remember { mutableStateOf(config.sets.toString()) }
     var reps by remember { mutableStateOf(config.reps.toString()) }
-    var weight by remember { mutableStateOf(config.targetWeightKg?.let { trimNumber(it) } ?: "") }
+    var weight by remember { mutableStateOf(config.targetWeightKg?.let { formatWeightPlain(it) } ?: "") }
     val defaultRest = RestDefaults.secondsFor(config.sets, config.reps)
     var rest by remember { mutableStateOf((config.restSeconds ?: defaultRest).toString()) }
 
@@ -122,9 +125,9 @@ fun ExerciseConfigDialog(
                 StepperField(
                     label = stringResource(R.string.weight_kg),
                     value = weight,
-                    onValueChange = { weight = it.filter { c -> c.isDigit() || c == '.' } },
-                    onDecrement = { weight = trimNumber(((weight.toDoubleOrNull() ?: 0.0) - 2.5).coerceAtLeast(0.0)) },
-                    onIncrement = { weight = trimNumber((weight.toDoubleOrNull() ?: 0.0) + 2.5) },
+                    onValueChange = { weight = sanitizeWeightInput(it) },
+                    onDecrement = { weight = formatWeightPlain(((parseWeight(weight) ?: 0.0) - 2.5).coerceAtLeast(0.0)) },
+                    onIncrement = { weight = formatWeightPlain((parseWeight(weight) ?: 0.0) + 2.5) },
                     decimal = true,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -144,7 +147,7 @@ fun ExerciseConfigDialog(
                     config.copy(
                         sets = sets.toIntOrNull()?.coerceAtLeast(1) ?: config.sets,
                         reps = reps.toIntOrNull()?.coerceAtLeast(1) ?: config.reps,
-                        targetWeightKg = weight.toDoubleOrNull(),
+                        targetWeightKg = parseWeight(weight),
                         restSeconds = rest.toIntOrNull()
                     )
                 )
@@ -153,6 +156,3 @@ fun ExerciseConfigDialog(
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }
-
-private fun trimNumber(v: Double): String =
-    if (v % 1.0 == 0.0) v.toInt().toString() else v.toString()

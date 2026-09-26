@@ -41,6 +41,12 @@
     <string name="delete_plan_msg">The plan and all its workouts will be removed.</string>
     <string name="workout_label">Workout %1$s</string>
     <string name="delete_workout">Delete workout</string>
+    <string name="delete_workout_title">Delete workout %1$s?</string>
+    <string name="delete_workout_msg">The workout and all its exercises will be removed.</string>
+    <string name="remove_exercise_title">Remove exercise?</string>
+    <string name="remove_exercise_msg">Its sets, reps, weight and rest settings in this workout will be lost.</string>
+    <string name="delete_exercise_title">Delete exercise?</string>
+    <string name="delete_exercise_msg">It will also be removed from every plan that uses it. Your logged history is kept.</string>
     <string name="move_up">Move up</string>
     <string name="move_down">Move down</string>
     <string name="swap_exercise">Replace exercise</string>

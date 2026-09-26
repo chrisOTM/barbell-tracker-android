@@ -149,6 +149,10 @@ interface SessionDao {
     @Query("SELECT * FROM sessions ORDER BY startedAt ASC")
     suspend fun getAllSessionsWithSets(): List<SessionWithSets>
 
+    /** Removes diary entries without a single logged set (workouts opened and left). */
+    @Query("DELETE FROM sessions WHERE id NOT IN (SELECT DISTINCT sessionId FROM session_sets)")
+    suspend fun deleteEmptySessions()
+
     /** Wipes all sessions; cascades to session_sets. */
     @Query("DELETE FROM sessions")
     suspend fun deleteAllSessions()

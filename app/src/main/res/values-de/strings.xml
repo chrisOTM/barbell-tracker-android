@@ -41,6 +41,12 @@
     <string name="delete_plan_msg">Der Plan und alle seine Workouts werden entfernt.</string>
     <string name="workout_label">Workout %1$s</string>
     <string name="delete_workout">Workout löschen</string>
+    <string name="delete_workout_title">Workout %1$s löschen?</string>
+    <string name="delete_workout_msg">Das Workout und alle seine Übungen werden entfernt.</string>
+    <string name="remove_exercise_title">Übung entfernen?</string>
+    <string name="remove_exercise_msg">Sätze, Wiederholungen, Gewicht und Pause dieser Übung in diesem Workout gehen verloren.</string>
+    <string name="delete_exercise_title">Übung löschen?</string>
+    <string name="delete_exercise_msg">Sie wird auch aus allen Plänen entfernt, die sie verwenden. Dein Trainingsverlauf bleibt erhalten.</string>
     <string name="move_up">Nach oben</string>
     <string name="move_down">Nach unten</string>
     <string name="swap_exercise">Übung ersetzen</string>

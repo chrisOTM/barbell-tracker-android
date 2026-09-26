@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.SessionSet
 import dev.chrisotm.barbelltracker.data.entity.WorkoutExercise
+import dev.chrisotm.barbelltracker.data.entity.WorkoutSession
 import dev.chrisotm.barbelltracker.data.repo.PlanRepository
 import dev.chrisotm.barbelltracker.data.repo.SessionRepository
 import dev.chrisotm.barbelltracker.domain.ActiveExercise
@@ -104,6 +105,8 @@ class ActiveWorkoutViewModel @Inject constructor(
         sessionPlanName = planRepository.getPlan(sessionPlanId)?.name ?: ""
         sessionWorkoutName = "Workout ${workout.workout.label}"
         sessionStartedAt = System.currentTimeMillis()
+        // Sweep entries left behind by workouts that were opened but never logged a set.
+        sessionRepository.deleteEmptySessions()
         sessionId = sessionRepository.startSession(
             planId = sessionPlanId,
             workoutId = workoutId,
@@ -223,17 +226,22 @@ class ActiveWorkoutViewModel @Inject constructor(
         else _state.value = _state.value.copy(weightKg = weightKg)
     }
 
-    /** End early; already-logged sets are kept (US-2.7). */
-    fun endEarly() {
+    /** End early; already-logged sets are kept (US-2.7). Returns false while still loading —
+     *  there is nothing to end yet and the caller can simply leave. */
+    fun endEarly(): Boolean {
+        if (!::engine.isInitialized) return false
         timerJob?.cancel()
         finish()
+        return true
     }
 
     private fun finish() {
         viewModelScope.launch {
             val results = engine.progressionResults()
             results.forEach { progressionChoices[it.workoutExerciseId] = it.suggestedNextWeightKg }
-            endSession()
+            // A workout ended before its first set leaves no diary entry.
+            if (engine.loggedSets().isEmpty()) sessionRepository.deleteSession(session())
+            else sessionRepository.finishSession(session().copy(endedAt = System.currentTimeMillis()))
             _state.value = _state.value.copy(
                 phase = Phase.FINISHED,
                 progression = results.map {
@@ -243,19 +251,14 @@ class ActiveWorkoutViewModel @Inject constructor(
         }
     }
 
-    private suspend fun endSession() {
-        sessionRepository.finishSession(
-            dev.chrisotm.barbelltracker.data.entity.WorkoutSession(
-                id = sessionId,
-                planId = sessionPlanId,
-                workoutId = workoutId,
-                planName = sessionPlanName,
-                workoutName = sessionWorkoutName,
-                startedAt = sessionStartedAt,
-                endedAt = System.currentTimeMillis()
-            )
-        )
-    }
+    private fun session() = WorkoutSession(
+        id = sessionId,
+        planId = sessionPlanId,
+        workoutId = workoutId,
+        planName = sessionPlanName,
+        workoutName = sessionWorkoutName,
+        startedAt = sessionStartedAt
+    )
 
     fun setProgressionChoice(workoutExerciseId: Long, weightKg: Double) {
         progressionChoices[workoutExerciseId] = weightKg

@@ -1,5 +1,6 @@
 package dev.chrisotm.barbelltracker.ui.workout
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,13 @@ fun ActiveWorkoutScreen(
     var confirmEnd by remember { mutableStateOf(false) }
     var editingWeight by remember { mutableStateOf(false) }
 
+    // System back must not silently abandon the workout: mid-workout it asks like the close
+    // button; on the summary it applies the shown weights, the screen's only way out.
+    BackHandler(enabled = state.phase != Phase.LOADING) {
+        if (state.phase == Phase.FINISHED) viewModel.applyProgression(onExit)
+        else confirmEnd = true
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -113,7 +121,7 @@ fun ActiveWorkoutScreen(
             title = stringResource(R.string.end_workout_title),
             message = stringResource(R.string.end_workout_msg),
             confirmLabel = stringResource(R.string.end),
-            onConfirm = { confirmEnd = false; viewModel.endEarly() },
+            onConfirm = { confirmEnd = false; if (!viewModel.endEarly()) onExit() },
             onDismiss = { confirmEnd = false }
         )
     }

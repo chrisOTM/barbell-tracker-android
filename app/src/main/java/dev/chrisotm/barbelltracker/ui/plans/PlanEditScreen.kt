@@ -65,6 +65,8 @@ fun PlanEditScreen(
     var pickerForWorkout by remember { mutableStateOf<Long?>(null) }
     var editingConfig by remember { mutableStateOf<WorkoutExercise?>(null) }
     var replacingConfig by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var deletingWorkout by remember { mutableStateOf<Workout?>(null) }
+    var removingConfig by remember { mutableStateOf<WorkoutExercise?>(null) }
 
     Scaffold(
         topBar = {
@@ -95,11 +97,11 @@ fun PlanEditScreen(
                 WorkoutCard(
                     workout = w,
                     onStart = { onStartWorkout(w.workout.id) },
-                    onDeleteWorkout = { viewModel.deleteWorkout(w.workout) },
+                    onDeleteWorkout = { deletingWorkout = w.workout },
                     onAddExercise = { pickerForWorkout = w.workout.id },
                     onEditConfig = { editingConfig = it },
                     onSwapConfig = { replacingConfig = it },
-                    onDeleteConfig = { viewModel.deleteExercise(it) },
+                    onDeleteConfig = { removingConfig = it },
                     onMove = { index, up ->
                         viewModel.moveExercise(w.exercises.map { it.config }, index, up)
                     }
@@ -128,6 +130,24 @@ fun PlanEditScreen(
             confirmLabel = stringResource(R.string.delete),
             onConfirm = { deletingPlan = false; viewModel.deletePlan(onBack) },
             onDismiss = { deletingPlan = false }
+        )
+    }
+    deletingWorkout?.let { workout ->
+        ConfirmDialog(
+            title = stringResource(R.string.delete_workout_title, workout.label),
+            message = stringResource(R.string.delete_workout_msg),
+            confirmLabel = stringResource(R.string.delete),
+            onConfirm = { deletingWorkout = null; viewModel.deleteWorkout(workout) },
+            onDismiss = { deletingWorkout = null }
+        )
+    }
+    removingConfig?.let { config ->
+        ConfirmDialog(
+            title = stringResource(R.string.remove_exercise_title),
+            message = stringResource(R.string.remove_exercise_msg),
+            confirmLabel = stringResource(R.string.remove),
+            onConfirm = { removingConfig = null; viewModel.deleteExercise(config) },
+            onDismiss = { removingConfig = null }
         )
     }
     pickerForWorkout?.let { workoutId ->

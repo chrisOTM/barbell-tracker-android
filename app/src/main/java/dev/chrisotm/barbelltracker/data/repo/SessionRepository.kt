@@ -12,6 +12,7 @@ interface SessionRepository {
     suspend fun logSet(set: SessionSet): Long
     suspend fun finishSession(session: WorkoutSession)
     suspend fun deleteSession(session: WorkoutSession)
+    suspend fun deleteEmptySessions()
     fun observeSessions(): Flow<List<WorkoutSession>>
     fun observeSessionsWithSets(): Flow<List<SessionWithSets>>
     fun observeSession(id: Long): Flow<SessionWithSets?>
@@ -42,6 +43,8 @@ class SessionRepositoryImpl @Inject constructor(
     override suspend fun finishSession(session: WorkoutSession) = dao.updateSession(session)
 
     override suspend fun deleteSession(session: WorkoutSession) = dao.deleteSession(session)
+
+    override suspend fun deleteEmptySessions() = dao.deleteEmptySessions()
 
     override fun observeSessions(): Flow<List<WorkoutSession>> = dao.observeSessions()
 

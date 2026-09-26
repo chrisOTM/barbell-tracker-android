@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,6 +35,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.chrisotm.barbelltracker.data.db.SeedCatalog
 import dev.chrisotm.barbelltracker.data.entity.Exercise
 import dev.chrisotm.barbelltracker.data.repo.ExerciseRepository
+import dev.chrisotm.barbelltracker.ui.components.ConfirmDialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -120,6 +124,7 @@ fun ExerciseEditScreen(
     viewModel: ExerciseEditViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var deleting by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -132,7 +137,7 @@ fun ExerciseEditScreen(
                 },
                 actions = {
                     if (!viewModel.isNew && state.isCustom) {
-                        IconButton(onClick = { viewModel.delete(onBack) }) {
+                        IconButton(onClick = { deleting = true }) {
                             Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                         }
                     }
@@ -172,5 +177,15 @@ fun ExerciseEditScreen(
                 modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
             ) { Text(stringResource(R.string.save)) }
         }
+    }
+
+    if (deleting) {
+        ConfirmDialog(
+            title = stringResource(R.string.delete_exercise_title),
+            message = stringResource(R.string.delete_exercise_msg),
+            confirmLabel = stringResource(R.string.delete),
+            onConfirm = { deleting = false; viewModel.delete(onBack) },
+            onDismiss = { deleting = false }
+        )
     }
 }

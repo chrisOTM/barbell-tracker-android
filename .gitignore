@@ -12,3 +12,8 @@ local.properties
 
 # Kotlin daemon
 .kotlin/
+
+# Local tooling (Claude Code session state, graphify knowledge graph)
+.claude/
+graphify-out/
+CLAUDE.md
